@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "298495645162",
+    "project_id": "handa-grocery",
+    "storage_bucket": "handa-grocery.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298495645162:android:32a1eec48ad185b9274e93",
+        "android_client_info": {
+          "package_name": "com.example.handa_grocery"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCC58I6eUYP_k1N7RuRTFw0_iOCTtNlz9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
