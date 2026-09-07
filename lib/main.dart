@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:handa_grocery/bottom%20Nav/Bottom_Nav.dart';
-
 import 'authrepo.dart';
 
 
@@ -17,9 +16,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return RepositoryProvider<AuthRepository>(
       create: (_) => AuthRepository(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: BottomNav(),
       ),
     );
