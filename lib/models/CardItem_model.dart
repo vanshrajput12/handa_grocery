@@ -17,7 +17,7 @@ class CardItemModel {
   ) {
     final data = doc.data() ?? {};
     return CardItemModel(
-      text: data['text'] as String? ?? '',
+      text: data['name'] as String? ?? '',
       description: data['description'] as String? ?? '',
       price: data['price'] as String? ?? "",
       image: data['image'] as String? ?? '',
@@ -27,7 +27,7 @@ class CardItemModel {
   // convert medicine to dart format using map
   Map<String, dynamic> toMap() {
     return {
-      'text': text,
+      'name': text,
       'description': description,
       'price': price,
       'image': image,

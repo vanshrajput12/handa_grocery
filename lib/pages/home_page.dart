@@ -35,13 +35,13 @@ class _HomePageState extends State<HomePage> {
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight(600),
                 color: Colors.grey,
-                fontSize: 14
+                fontSize: 14,
               ),
             ),
           ],
         ),
         actionsPadding: EdgeInsets.only(right: 24),
-        actions: [  Icon(Icons.notifications),],
+        actions: [Icon(Icons.notifications)],
       ),
       backgroundColor: Colors.teal.shade100,
       body: SafeArea(
@@ -97,7 +97,6 @@ class _HomePageState extends State<HomePage> {
             StreamBuilder<List<CardItemModel>>(
               stream: productService.StreamRice(),
               builder: (context, snapshot) {
-
                 // Loading
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const SliverToBoxAdapter(
@@ -117,10 +116,7 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.all(20),
                       child: Text(
                         "Error: ${snapshot.error}",
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 16,
-                        ),
+                        style: const TextStyle(color: Colors.red, fontSize: 16),
                       ),
                     ),
                   );
@@ -129,9 +125,7 @@ class _HomePageState extends State<HomePage> {
                 // No data
                 if (!snapshot.hasData) {
                   return const SliverToBoxAdapter(
-                    child: Center(
-                      child: Text("No data found"),
-                    ),
+                    child: Center(child: Text("No data found")),
                   );
                 }
 
@@ -140,42 +134,29 @@ class _HomePageState extends State<HomePage> {
                 // Empty list
                 if (riceProducts.isEmpty) {
                   return const SliverToBoxAdapter(
-                    child: Center(
-                      child: Text("No rice products found"),
-                    ),
+                    child: Center(child: Text("No rice products found")),
                   );
                 }
 
                 // Product Grid
                 return SliverPadding(
                   padding: const EdgeInsets.all(20),
-
                   sliver: SliverGrid(
-                    delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-
-                        final rice = riceProducts[index];
-
-                        return CardItem(
-                          cardItemModel: rice,
-                        );
-                      },
-
-                      childCount: riceProducts.length,
-                    ),
-
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final rice = riceProducts[index];
+                      return CardItem(cardItemModel: rice);
+                    }, childCount: riceProducts.length),
                     gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                      childAspectRatio: 0.75,
-                    ),
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          childAspectRatio: 0.75,
+                        ),
                   ),
                 );
               },
             ),
-
           ],
         ),
       ),
