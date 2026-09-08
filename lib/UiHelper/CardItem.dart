@@ -29,7 +29,7 @@ class CardItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06),
               blurRadius: 12,
               offset: const Offset(0, 5),
             ),
@@ -78,7 +78,7 @@ class CardItem extends StatelessWidget {
                         height: 34,
                         width: 34,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.95),
+                          color: Colors.white.withValues(alpha: 0.95),
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(
