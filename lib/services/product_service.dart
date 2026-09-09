@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/CardItem_model.dart';
 
 class ProductService {
-
   final CollectionReference<Map<String, dynamic>> _collection =
   FirebaseFirestore.instance.collection('Rice');
 

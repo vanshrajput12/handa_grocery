@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,9 +9,12 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: Colors.teal.shade100,
 
+      // ================= APP BAR =================
       appBar: AppBar(
         backgroundColor: Colors.teal.shade100,
         elevation: 0,
@@ -25,6 +29,7 @@ class ProfilePage extends StatelessWidget {
         ),
       ),
 
+      // ================= BODY =================
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
@@ -50,7 +55,7 @@ class ProfilePage extends StatelessWidget {
 
                 child: Column(
                   children: [
-                    // Profile Image
+                    // ================= PROFILE IMAGE =================
                     Container(
                       height: 85,
                       width: 85,
@@ -73,29 +78,82 @@ class ProfilePage extends StatelessWidget {
 
                     const SizedBox(height: 12),
 
-                    // Name
-                    Text(
-                      "Vansh Rajput",
-                      style: GoogleFonts.poppins(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+                    // ================= NAME + EMAIL =================
+                    StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                      stream: currentUser == null
+                          ? null
+                          : FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(currentUser.uid)
+                          .snapshots(),
 
-                    const SizedBox(height: 3),
+                      builder: (context, snapshot) {
+                        // Firebase Auth fallback
+                        String name =
+                            currentUser?.displayName ?? "User";
 
-                    // Email
-                    Text(
-                      "vansh@example.com",
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        color: Colors.grey.shade600,
-                      ),
+                        String email =
+                            currentUser?.email ?? "No email";
+
+                        // Get data from Firestore
+                        if (snapshot.hasData &&
+                            snapshot.data!.exists) {
+                          final data = snapshot.data!.data();
+
+                          if (data != null) {
+                            final firestoreName =
+                            data['name']?.toString();
+
+                            final firestoreEmail =
+                            data['email']?.toString();
+
+                            if (firestoreName != null &&
+                                firestoreName.isNotEmpty) {
+                              name = firestoreName;
+                            }
+
+                            if (firestoreEmail != null &&
+                                firestoreEmail.isNotEmpty) {
+                              email = firestoreEmail;
+                            }
+                          }
+                        }
+
+                        return Column(
+                          children: [
+                            // Name
+                            Text(
+                              name,
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.poppins(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+
+                            const SizedBox(height: 3),
+
+                            // Email
+                            Text(
+                              email,
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
 
                     const SizedBox(height: 16),
 
-                    // Edit Profile Button
+                    // ================= EDIT PROFILE =================
                     SizedBox(
                       height: 42,
                       child: OutlinedButton.icon(
@@ -103,7 +161,10 @@ class ProfilePage extends StatelessWidget {
                           // Edit profile
                         },
 
-                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        icon: const Icon(
+                          Icons.edit_outlined,
+                          size: 18,
+                        ),
 
                         label: Text(
                           "Edit Profile",
@@ -114,7 +175,9 @@ class ProfilePage extends StatelessWidget {
 
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.teal.shade700,
-                          side: BorderSide(color: Colors.teal.shade300),
+                          side: BorderSide(
+                            color: Colors.teal.shade300,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -131,6 +194,7 @@ class ProfilePage extends StatelessWidget {
               _sectionTitle("Account"),
 
               const SizedBox(height: 10),
+
               ProfileCardHelper(
                 icon: Icons.shopping_bag_outlined,
                 title: "My Orders",
@@ -187,6 +251,7 @@ class ProfilePage extends StatelessWidget {
               _sectionTitle("Support"),
 
               const SizedBox(height: 10),
+
               ProfileCardHelper(
                 icon: Icons.help_outline_rounded,
                 title: "Help & Support",
@@ -210,6 +275,7 @@ class ProfilePage extends StatelessWidget {
               // ================= LOGOUT =================
               Container(
                 width: double.infinity,
+
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(18),
@@ -254,6 +320,7 @@ class ProfilePage extends StatelessWidget {
 
               const SizedBox(height: 25),
 
+              // ================= FOOTER =================
               Text(
                 "Handa Grocery",
                 style: GoogleFonts.poppins(
@@ -280,7 +347,6 @@ class ProfilePage extends StatelessWidget {
   }
 
   // ================= SECTION TITLE =================
-
   Widget _sectionTitle(String title) {
     return Align(
       alignment: Alignment.centerLeft,
@@ -295,10 +361,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  // ================= PROFILE OPTION =================
-
   // ================= LOGOUT DIALOG =================
-
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -311,7 +374,9 @@ class ProfilePage extends StatelessWidget {
 
           title: Text(
             "Logout?",
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w700,
+            ),
           ),
 
           content: Text(
@@ -323,6 +388,7 @@ class ProfilePage extends StatelessWidget {
           ),
 
           actions: [
+            // Cancel
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -337,15 +403,21 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
 
+            // Logout
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.pop(context);
-                FirebaseAuth.instance.signOut();
+
+                await FirebaseAuth.instance.signOut();
+
+                // If you have an auth-state listener,
+                // it will automatically show the login screen.
               },
 
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red.shade600,
                 foregroundColor: Colors.white,
+
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -353,7 +425,9 @@ class ProfilePage extends StatelessWidget {
 
               child: Text(
                 "Logout",
-                style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
