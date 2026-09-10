@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:handa_grocery/pages/home_page.dart';
 import 'package:handa_grocery/pages/order_detail.dart';
 import 'package:handa_grocery/pages/profile_page.dart';
+import 'package:handa_grocery/pages/wishlist_page.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({super.key});
@@ -13,7 +14,12 @@ class BottomNav extends StatefulWidget {
 
 class _BottomNavState extends State<BottomNav> {
   int currentIndex = 0;
-  final List<Widget> pages = const [HomePage(), OrderDetail(), ProfilePage()];
+  final List<Widget> pages = const [
+    HomePage(),
+    OrderDetail(),
+    WishlistPage(),
+    ProfilePage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +44,10 @@ class _BottomNavState extends State<BottomNav> {
           ),
           CrystalNavigationBarItem(
             icon: Icons.shopping_cart,
+            selectedColor: Colors.white,
+          ),
+          CrystalNavigationBarItem(
+            icon: Icons.favorite,
             selectedColor: Colors.white,
           ),
           CrystalNavigationBarItem(
