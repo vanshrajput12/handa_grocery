@@ -13,8 +13,6 @@ class ProfilePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.teal.shade100,
-
-      // ================= APP BAR =================
       appBar: AppBar(
         backgroundColor: Colors.teal.shade100,
         elevation: 0,
@@ -28,12 +26,9 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
       ),
-
-      // ================= BODY =================
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
-
           child: Column(
             children: [
               // ================= PROFILE HEADER =================
@@ -59,7 +54,6 @@ class ProfilePage extends StatelessWidget {
                     Container(
                       height: 85,
                       width: 85,
-
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.teal.shade50,

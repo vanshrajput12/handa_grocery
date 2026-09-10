@@ -14,11 +14,11 @@ class BottomNav extends StatefulWidget {
 
 class _BottomNavState extends State<BottomNav> {
   int currentIndex = 0;
-  final List<Widget> pages = const [
-    HomePage(),
-    OrderDetail(),
+  final List<Widget> pages = [
+    const HomePage(),
+    const OrderDetail(),
     WishlistPage(),
-    ProfilePage(),
+    const ProfilePage(),
   ];
 
   @override

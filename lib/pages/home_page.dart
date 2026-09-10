@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:handa_grocery/UiHelper/CardItem.dart';
+import 'package:handa_grocery/UiHelper/homePage_CardItem.dart';
 import 'package:handa_grocery/models/CardItem_model.dart';
 import 'package:handa_grocery/services/product_service.dart';
 
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                   sliver: SliverGrid(
                     delegate: SliverChildBuilderDelegate((context, index) {
                       final rice = riceProducts[index];
-                      return CardItem(cardItemModel: rice);
+                      return HomePageCardItem(cardItemModel: rice);
                     }, childCount: riceProducts.length),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(

@@ -41,7 +41,6 @@ class WishlistService {
 
   Future<bool> isWishlisted(String productName) async {
     final document = await _wishlistCollection.doc(productName).get();
-
     return document.exists;
   }
 
