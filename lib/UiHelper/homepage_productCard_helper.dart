@@ -12,7 +12,6 @@ class HomePageCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(22),
-
       onTap: () {
         Navigator.push(
           context,

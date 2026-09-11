@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:handa_grocery/UiHelper/profile_card_helper.dart';
+import 'package:handa_grocery/UiHelper/profileCard_helper.dart';
+
+import '../auth/bloc/auth/auth_view.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -359,8 +361,7 @@ class ProfilePage extends StatelessWidget {
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
-
-      builder: (context) {
+      builder: (dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(22),
@@ -382,12 +383,11 @@ class ProfilePage extends StatelessWidget {
           ),
 
           actions: [
-            // Cancel
+            // CANCEL
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
               },
-
               child: Text(
                 "Cancel",
                 style: GoogleFonts.poppins(
@@ -397,21 +397,42 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
 
-            // Logout
+            // LOGOUT
             ElevatedButton(
               onPressed: () async {
-                Navigator.pop(context);
+                try {
+                  // Close dialog
+                  Navigator.pop(dialogContext);
 
-                await FirebaseAuth.instance.signOut();
+                  // Sign out
+                  await FirebaseAuth.instance.signOut();
 
-                // If you have an auth-state listener,
-                // it will automatically show the login screen.
+                  if (!context.mounted) return;
+
+                  // Go to AuthPage
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AuthPage(),
+                    ),
+                        (route) => false,
+                  );
+                } catch (e) {
+                  if (!context.mounted) return;
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "Logout failed: $e",
+                      ),
+                    ),
+                  );
+                }
               },
 
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red.shade600,
                 foregroundColor: Colors.white,
-
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

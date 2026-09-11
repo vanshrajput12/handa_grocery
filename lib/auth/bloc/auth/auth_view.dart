@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:handa_grocery/pages/home_page.dart';
 import '../../../authrepo.dart';
 import 'auth_bloc.dart';
@@ -58,6 +59,7 @@ class _AuthViewState extends State<AuthView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.teal.shade100,
       body: SafeArea(
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
@@ -75,33 +77,60 @@ class _AuthViewState extends State<AuthView> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Icon(Icons.fastfood, size: 64, color: Colors.deepOrange),
-                    const SizedBox(height: 16),
-                    const Text('Welcome Back',
+                    Text('Login',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 32),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(Icons.email_outlined),
-                        border: OutlineInputBorder(),
+                        style: GoogleFonts.poppins(fontSize: 28,
+                            color: Colors.black,fontWeight: FontWeight.bold)),
+                     SizedBox(height: 2,),
+                     Text(
+                        "Reliable. Best. Faster.",
+                        style: GoogleFonts.poppins(fontSize: 16, color: Colors.teal, fontWeight: FontWeight(500)),
                       ),
-                      validator: (v) =>
-                      (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
+                    SizedBox(height: 50,),
+
+                   Center(child: Image.asset("assets/icons/software-update.png", height: 300,width: 300,)),
+                    
+                    const SizedBox(height: 16),
+
+                    const SizedBox(height: 32),
+                    TextField(
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: "Qwerty@gmail.com",
+
+                        hintStyle: const TextStyle(
+                          color: Colors.white,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.shade500,
+
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                          ),
+                        ),
+
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.orange,
+                            width: 2,
+                          ),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        border: const OutlineInputBorder(),
+                        hintText: "Password",
                         suffixIcon: IconButton(
                           icon: Icon(_obscurePassword
                               ? Icons.visibility_outlined
@@ -109,7 +138,39 @@ class _AuthViewState extends State<AuthView> {
                           onPressed: () =>
                               setState(() => _obscurePassword = !_obscurePassword),
                         ),
+                        hintStyle: const TextStyle(
+                          color: Colors.white,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.shade500,
+
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                          ),
+                        ),
+
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.orange,
+                            width: 2,
+                          ),
+                        ),
                       ),
+                      // decoration: InputDecoration(
+                      //   labelText: 'Password',
+                      //   prefixIcon: const Icon(Icons.lock_outline),
+                      //   border: const OutlineInputBorder(),
+                      //   suffixIcon: IconButton(
+                      //     icon: Icon(_obscurePassword
+                      //         ? Icons.visibility_outlined
+                      //         : Icons.visibility_off_outlined),
+                      //     onPressed: () =>
+                      //         setState(() => _obscurePassword = !_obscurePassword),
+                      //   ),
+                      // ),
                       validator: (v) =>
                       (v == null || v.length < 6) ? 'At least 6 characters' : null,
                     ),

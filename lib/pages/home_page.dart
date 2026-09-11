@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:handa_grocery/UiHelper/homePage_CardItem.dart';
+import 'package:handa_grocery/UiHelper/homepage_productCard_helper.dart';
 import 'package:handa_grocery/models/CardItem_model.dart';
 import 'package:handa_grocery/services/product_service.dart';
 
