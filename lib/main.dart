@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:handa_grocery/auth/bloc/auth/auth_gate.dart';
+import 'auth/login/auth/auth_gate.dart';
 import 'authrepo.dart';
 
 

@@ -74,33 +74,56 @@ class AuthRepository {
   }
 
   /// Creates a new account with name/email/password
+  /// Creates a new account with name/email/password
   Future<UserModel> signup({
     required String name,
     required String email,
     required String password,
   }) async {
     try {
+      // Remove unnecessary spaces
+      final cleanName = name.trim();
+      final cleanEmail = email.trim();
+      final cleanPassword = password;
+
+      // Validate before calling Firebase
+      if (cleanName.isEmpty) {
+        throw 'Please enter your name.';
+      }
+
+      if (cleanEmail.isEmpty) {
+        throw 'Please enter your email.';
+      }
+
+      if (cleanPassword.isEmpty) {
+        throw 'Please enter your password.';
+      }
+
+      if (cleanPassword.length < 6) {
+        throw 'Password must be at least 6 characters.';
+      }
+
       final credential =
       await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: cleanEmail,
+        password: cleanPassword,
       );
 
       final user = credential.user!;
 
       // Save name in Firebase Authentication
-      await user.updateDisplayName(name);
+      await user.updateDisplayName(cleanName);
 
       // Save name + email + UID in Firestore
       await _firestore.collection('users').doc(user.uid).set({
         'uid': user.uid,
-        'name': name,
-        'email': user.email ?? email,
+        'name': cleanName,
+        'email': user.email ?? cleanEmail,
       });
 
       return UserModel.fromFirebaseUser(
         user,
-        name: name,
+        name: cleanName,
       );
     } on FirebaseAuthException catch (e) {
       throw _mapFirebaseError(e);

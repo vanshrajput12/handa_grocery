@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handa_grocery/UiHelper/profileCard_helper.dart';
-
-import '../auth/bloc/auth/auth_view.dart';
+import '../auth/login/auth/auth_view.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});

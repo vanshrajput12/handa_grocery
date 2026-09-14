@@ -7,8 +7,6 @@ import 'auth_bloc.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
-/// PAGE — responsible only for creating/providing the Bloc.
-/// This is what you navigate to: Navigator.push(... AuthPage() ...)
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
 
@@ -79,23 +77,25 @@ class _AuthViewState extends State<AuthView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Login',
+                    SizedBox(height: 10,),
+                    Text('LOGIN',
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(fontSize: 28,
+                        style: GoogleFonts.poppins(fontSize: 22,
                             color: Colors.black,fontWeight: FontWeight.bold)),
                      SizedBox(height: 2,),
                      Text(
                         "Reliable. Best. Faster.",
-                        style: GoogleFonts.poppins(fontSize: 16, color: Colors.teal, fontWeight: FontWeight(500)),
+                        style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey.shade700, fontWeight: FontWeight(500)),
                       ),
                     SizedBox(height: 50,),
 
-                   Center(child: Image.asset("assets/icons/software-update.png", height: 300,width: 300,)),
+                   Center(child: Image.asset("assets/icons/software-update.png", height: 300,width: 220,)),
                     
                     const SizedBox(height: 16),
 
                     const SizedBox(height: 32),
                     TextField(
+                      controller: _emailController,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -110,14 +110,14 @@ class _AuthViewState extends State<AuthView> {
                         fillColor: Colors.grey.shade500,
 
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(24),
                           borderSide: const BorderSide(
                             color: Colors.grey,
                           ),
                         ),
 
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(24),
                           borderSide: const BorderSide(
                             color: Colors.orange,
                             width: 2,
@@ -145,48 +145,45 @@ class _AuthViewState extends State<AuthView> {
                         fillColor: Colors.grey.shade500,
 
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(24),
                           borderSide: const BorderSide(
                             color: Colors.grey,
                           ),
                         ),
 
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(24),
                           borderSide: const BorderSide(
                             color: Colors.orange,
                             width: 2,
                           ),
                         ),
                       ),
-                      // decoration: InputDecoration(
-                      //   labelText: 'Password',
-                      //   prefixIcon: const Icon(Icons.lock_outline),
-                      //   border: const OutlineInputBorder(),
-                      //   suffixIcon: IconButton(
-                      //     icon: Icon(_obscurePassword
-                      //         ? Icons.visibility_outlined
-                      //         : Icons.visibility_off_outlined),
-                      //     onPressed: () =>
-                      //         setState(() => _obscurePassword = !_obscurePassword),
-                      //   ),
-                      // ),
+
                       validator: (v) =>
                       (v == null || v.length < 6) ? 'At least 6 characters' : null,
                     ),
+                     Text("Forgot Password?" , style: GoogleFonts.poppins(),),
                     const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: isLoading ? null : _submit,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: Colors.deepOrange,
+                    Container(
+                      width: 300,
+                      decoration: BoxDecoration(),
+                      child: ElevatedButton(
+                        onPressed: isLoading ? null : _submit,
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(24)
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          backgroundColor: Colors.white,
+                        ),
+                        child: isLoading
+                            ? const SizedBox(
+                          height: 20, width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                            : Text('Verify & Continue', style: GoogleFonts.poppins(fontSize: 18, color: Colors.black, fontWeight: FontWeight(600))),
                       ),
-                      child: isLoading
-                          ? const SizedBox(
-                        height: 20, width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                          : const Text('Login', style: TextStyle(fontSize: 16)),
                     ),
                   ],
                 ),
