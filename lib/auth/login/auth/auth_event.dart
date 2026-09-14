@@ -1,26 +1,40 @@
-import 'package:equatable/equatable.dart';
+abstract class AuthEvent {}
 
-abstract class AuthEvent extends Equatable {
-  const AuthEvent();
-  @override
-  List<Object?> get props => [];
-}
-
+/// Check whether a user is already logged in
 class AuthCheckedRequested extends AuthEvent {}
 
+/// Login with email and password
 class AuthLoginRequested extends AuthEvent {
   final String email;
   final String password;
-  const AuthLoginRequested({required this.email, required this.password});
-  @override
-  List<Object?> get props => [email, password];
+
+  AuthLoginRequested({
+    required this.email,
+    required this.password,
+  });
 }
 
-class AuthLogoutRequested extends AuthEvent {}
+/// Create a new account
 class AuthSignupRequested extends AuthEvent {
+  final String name;
   final String email;
   final String password;
-  const AuthSignupRequested({required this.email, required this.password});
-  @override
-  List<Object?> get props => [email, password];
+
+  AuthSignupRequested({
+    required this.name,
+    required this.email,
+    required this.password,
+  });
 }
+
+/// Send password reset email
+class AuthForgotPasswordRequested extends AuthEvent {
+  final String email;
+
+  AuthForgotPasswordRequested({
+    required this.email,
+  });
+}
+
+/// Logout current user
+class AuthLogoutRequested extends AuthEvent {}

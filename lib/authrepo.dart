@@ -13,7 +13,10 @@ class AuthRepository {
   })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
         _firestore = firestore ?? FirebaseFirestore.instance;
 
-  /// Checks if a user is already logged in
+  // ============================================================
+  // CHECK CURRENT USER
+  // ============================================================
+
   Future<UserModel?> getCurrentUser() async {
     final firebaseUser = _firebaseAuth.currentUser;
 
@@ -24,14 +27,29 @@ class AuthRepository {
     return UserModel.fromFirebaseUser(firebaseUser);
   }
 
-  /// Logs in an existing user with email/password
+  // ============================================================
+  // LOGIN
+  // ============================================================
+
   Future<UserModel> login({
     required String email,
     required String password,
   }) async {
     try {
-      final credential = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
+      final cleanEmail = email.trim();
+
+      // Validate before Firebase
+      if (cleanEmail.isEmpty) {
+        throw 'Please enter your email.';
+      }
+
+      if (password.isEmpty) {
+        throw 'Please enter your password.';
+      }
+
+      final credential =
+      await _firebaseAuth.signInWithEmailAndPassword(
+        email: cleanEmail,
         password: password,
       );
 
@@ -45,7 +63,6 @@ class AuthRepository {
 
       String name = user.displayName ?? '';
 
-      // If name is already saved in Firestore, use it
       if (userDoc.exists) {
         final data = userDoc.data();
 
@@ -54,12 +71,12 @@ class AuthRepository {
         }
       }
 
-      // Save/update user information automatically
+      // Save/update user information
       await _firestore.collection('users').doc(user.uid).set(
         {
           'uid': user.uid,
           'name': name,
-          'email': user.email ?? email,
+          'email': user.email ?? cleanEmail,
         },
         SetOptions(merge: true),
       );
@@ -73,20 +90,21 @@ class AuthRepository {
     }
   }
 
-  /// Creates a new account with name/email/password
-  /// Creates a new account with name/email/password
+  // ============================================================
+  // SIGNUP
+  // ============================================================
+
   Future<UserModel> signup({
     required String name,
     required String email,
     required String password,
   }) async {
     try {
-      // Remove unnecessary spaces
       final cleanName = name.trim();
       final cleanEmail = email.trim();
       final cleanPassword = password;
 
-      // Validate before calling Firebase
+      // Validate before Firebase
       if (cleanName.isEmpty) {
         throw 'Please enter your name.';
       }
@@ -130,12 +148,42 @@ class AuthRepository {
     }
   }
 
-  /// Logs the current user out
+  // ============================================================
+  // FORGOT PASSWORD
+  // ============================================================
+
+  Future<void> resetPassword({
+    required String email,
+  }) async {
+    try {
+      final cleanEmail = email.trim();
+
+      // IMPORTANT:
+      // Don't send empty email to Firebase.
+      if (cleanEmail.isEmpty) {
+        throw 'Please enter your email.';
+      }
+
+      await _firebaseAuth.sendPasswordResetEmail(
+        email: cleanEmail,
+      );
+    } on FirebaseAuthException catch (e) {
+      throw _mapFirebaseError(e);
+    }
+  }
+
+  // ============================================================
+  // LOGOUT
+  // ============================================================
+
   Future<void> logout() async {
     await _firebaseAuth.signOut();
   }
 
-  /// Converts Firebase error codes into readable messages
+  // ============================================================
+  // FIREBASE ERROR MESSAGES
+  // ============================================================
+
   String _mapFirebaseError(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
@@ -158,6 +206,12 @@ class AuthRepository {
 
       case 'user-disabled':
         return 'This account has been disabled.';
+
+      case 'too-many-requests':
+        return 'Too many attempts. Please try again later.';
+
+      case 'network-request-failed':
+        return 'Network error. Please check your internet connection.';
 
       default:
         return e.message ?? 'Something went wrong. Please try again.';

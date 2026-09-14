@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:handa_grocery/auth/login/auth/forgot_password_page/forgot_password.dart';
 import 'package:handa_grocery/pages/home_page.dart';
 import '../../../authrepo.dart';
 import 'auth_bloc.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
+// applying the bloc properties on the LOGIN SCREEN through this AUTH PAGE
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthBloc(
-        authRepository: context.read<AuthRepository>(),
-      ),
+      create: (context) =>
+          AuthBloc(authRepository: context.read<AuthRepository>()),
       child: const AuthView(),
     );
   }
 }
 
-/// VIEW — responsible only for UI. Reads the Bloc that's already provided
-/// above it. Never creates the Bloc itself — keeps UI and setup separate.
+// UI Part of LOGIN Screen --(Login Screen)--
 class AuthView extends StatefulWidget {
   const AuthView({super.key});
 
@@ -48,7 +47,7 @@ class _AuthViewState extends State<AuthView> {
       context.read<AuthBloc>().add(
         AuthSignupRequested(
           email: _emailController.text.trim(),
-          password: _passwordController.text,
+          password: _passwordController.text, name: '',
         ),
       );
     }
@@ -62,10 +61,14 @@ class _AuthViewState extends State<AuthView> {
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is AuthAuthenticated) {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
             } else if (state is AuthFailure) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
             }
           },
           builder: (context, state) {
@@ -75,45 +78,54 @@ class _AuthViewState extends State<AuthView> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 10,),
-                    Text('LOGIN',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(fontSize: 22,
-                            color: Colors.black,fontWeight: FontWeight.bold)),
-                     SizedBox(height: 2,),
-                     Text(
-                        "Reliable. Best. Faster.",
-                        style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey.shade700, fontWeight: FontWeight(500)),
+                    SizedBox(height: 10),
+                    Text(
+                      'LOGIN',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
                       ),
-                    SizedBox(height: 50,),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      "Reliable. Best. Faster.",
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        color: Colors.grey.shade700,
+                        fontWeight: FontWeight(500),
+                      ),
+                    ),
+                    SizedBox(height: 50),
 
-                   Center(child: Image.asset("assets/icons/software-update.png", height: 300,width: 220,)),
-                    
+                    Center(
+                      child: Image.asset(
+                        "assets/icons/software-update.png",
+                        height: 300,
+                        width: 220,
+                      ),
+                    ),
+
                     const SizedBox(height: 16),
 
                     const SizedBox(height: 32),
                     TextField(
                       controller: _emailController,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
+                      style: GoogleFonts.poppins(
+                          color: Colors.white, fontWeight: FontWeight(600)
                       ),
                       decoration: InputDecoration(
                         hintText: "Qwerty@gmail.com",
 
-                        hintStyle: const TextStyle(
-                          color: Colors.white,
-                        ),
+                        hintStyle: const TextStyle(color: Colors.white),
                         filled: true,
                         fillColor: Colors.grey.shade500,
 
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
-                          borderSide: const BorderSide(
-                            color: Colors.grey,
-                          ),
+                          borderSide: const BorderSide(color: Colors.grey),
                         ),
 
                         focusedBorder: OutlineInputBorder(
@@ -127,28 +139,30 @@ class _AuthViewState extends State<AuthView> {
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
+                      style: GoogleFonts.poppins(
+                        color: Colors.white, fontWeight: FontWeight(600)
+                      ),
                       controller: _passwordController,
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         hintText: "Password",
                         suffixIcon: IconButton(
-                          icon: Icon(_obscurePassword
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined),
-                          onPressed: () =>
-                              setState(() => _obscurePassword = !_obscurePassword),
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
+                          onPressed: () => setState(
+                            () => _obscurePassword = !_obscurePassword,
+                          ),
                         ),
-                        hintStyle: const TextStyle(
-                          color: Colors.white,
-                        ),
+                        hintStyle: const TextStyle(color: Colors.white),
                         filled: true,
                         fillColor: Colors.grey.shade500,
 
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
-                          borderSide: const BorderSide(
-                            color: Colors.grey,
-                          ),
+                          borderSide: const BorderSide(color: Colors.grey),
                         ),
 
                         focusedBorder: OutlineInputBorder(
@@ -159,11 +173,30 @@ class _AuthViewState extends State<AuthView> {
                           ),
                         ),
                       ),
-
-                      validator: (v) =>
-                      (v == null || v.length < 6) ? 'At least 6 characters' : null,
                     ),
-                     Text("Forgot Password?" , style: GoogleFonts.poppins(),),
+                    SizedBox(height: 8),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width / 2,
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ForgotPassword(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Forgot Password?",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight(700),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 24),
                     Container(
                       width: 300,
@@ -172,17 +205,28 @@ class _AuthViewState extends State<AuthView> {
                         onPressed: isLoading ? null : _submit,
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(24)
+                            borderRadius: BorderRadiusGeometry.circular(24),
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           backgroundColor: Colors.white,
                         ),
                         child: isLoading
                             ? const SizedBox(
-                          height: 20, width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                        )
-                            : Text('Verify & Continue', style: GoogleFonts.poppins(fontSize: 18, color: Colors.black, fontWeight: FontWeight(600))),
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                'Verify & Continue',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight(600),
+                                ),
+                              ),
                       ),
                     ),
                   ],
