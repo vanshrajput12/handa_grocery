@@ -41,35 +41,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     }
 
     // Send event to the SAME AuthBloc
-    context.read<AuthBloc>().add(
-      AuthForgotPasswordRequested(
-        email: email,
-      ),
-    );
+    context.read<AuthBloc>().add(AuthForgotPasswordRequested(email: email));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
-      // ========================================================
-      // APP BAR
-      // ========================================================
-
-
-
-      // ========================================================
-      // BODY
-      // ========================================================
-
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-
-          // ----------------------------------------------------
-          // SUCCESS
-          // ----------------------------------------------------
-
           if (state is AuthSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -78,11 +58,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
             );
           }
-
-          // ----------------------------------------------------
-          // ERROR
-          // ----------------------------------------------------
-
           if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -95,15 +70,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(30),
-
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 40),
 
-              Lottie.asset("assets/animations/forgotPassword.json", height: 300),
+              Lottie.asset(
+                "assets/animations/forgotPassword.json",
+                height: 300,
+              ),
               const SizedBox(height: 40),
-               Text(
+              Text(
                 'Forgot Password?',
                 style: GoogleFonts.poppins(
                   fontSize: 22,
@@ -116,47 +93,40 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 style: GoogleFonts.poppins(
                   fontSize: 15,
                   color: Colors.grey.shade700,
-                  fontWeight: FontWeight(600)
+                  fontWeight: FontWeight(600),
                 ),
               ),
 
               const SizedBox(height: 35),
 
-
               TextField(
                 controller: emailController,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.done,
-
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontWeight: FontWeight(600),
+                ),
                 decoration: InputDecoration(
                   hintText: 'Enter your email',
-
-                  prefixIcon: const Icon(
-                    Icons.email_outlined,
-                  ),
-
+                  hintStyle:const TextStyle(color: Colors.white),
+                  prefixIcon: const Icon(Icons.email_outlined, color: Colors.white,),
                   filled: true,
-                  fillColor: Colors.white,
-
+                  fillColor: Colors.grey,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 16,
                   ),
-
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide: BorderSide.none,
                   ),
-
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(
-                      color: Colors.grey
-                    ),
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: const BorderSide(color: Colors.grey),
                   ),
-
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(24),
                     borderSide: const BorderSide(
                       color: Colors.orange,
                       width: 2,
@@ -170,10 +140,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               // ==================================================
               // SEND RESET BUTTON
               // ==================================================
-
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
-
                   final isLoading = state is AuthLoading;
 
                   return SizedBox(
@@ -181,59 +149,55 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     height: 55,
 
                     child: ElevatedButton(
-                      onPressed:
-                      isLoading ? null : _sendResetLink,
+                      onPressed: isLoading ? null : _sendResetLink,
 
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        foregroundColor: Colors.white,
-
+                        backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(24),
                         ),
                       ),
-
                       child: isLoading
                           ? const SizedBox(
-                        width: 24,
-                        height: 24,
-
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          color: Colors.white,
-                        ),
-                      )
-
-                          :  Text(
-                        'Send Reset Link',
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: Colors.black,
+                              ),
+                            )
+                          : Text(
+                              'Send Reset Link',
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   );
                 },
               ),
 
               const SizedBox(height: 20),
-
-              // ==================================================
-              // BACK TO LOGIN
-              // ==================================================
-
               Center(
                 child: TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-
-                  child: const Text(
-                    'Back to Login',
-                    style: TextStyle(
-                      color: Colors.teal,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.arrow_back_outlined, size: 20),
+                      SizedBox(width: 5),
+                      const Text(
+                        'Back to Login',
+                        style: TextStyle(
+                          color: Colors.orange,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

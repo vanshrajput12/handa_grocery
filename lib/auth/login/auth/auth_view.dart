@@ -69,7 +69,7 @@ class _AuthViewState extends State<AuthView> {
             } else if (state is AuthFailure) {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text(state.message)));
+              ).showSnackBar(SnackBar(content: Text(state.message, style: GoogleFonts.poppins(fontWeight: FontWeight(600)),),   backgroundColor: Colors.red,));
             }
           },
           builder: (context, state) {
