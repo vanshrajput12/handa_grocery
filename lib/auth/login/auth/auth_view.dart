@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handa_grocery/auth/login/auth/forgot_password_page/forgot_password.dart';
 import 'package:handa_grocery/pages/home_page.dart';
+import 'package:lottie/lottie.dart';
 import '../../../authrepo.dart';
 import 'auth_bloc.dart';
 import 'auth_event.dart';
@@ -100,10 +101,9 @@ class _AuthViewState extends State<AuthView> {
                     ),
                     SizedBox(height: 50),
                     Center(
-                      child: Image.asset(
-                        "assets/icons/software-update.png",
+                      child: Lottie.asset(
+                        "assets/animations/Relax on the beach.json",
                         height: 300,
-                        width: 220,
                       ),
                     ),
 
