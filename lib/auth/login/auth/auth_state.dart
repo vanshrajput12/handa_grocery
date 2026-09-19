@@ -8,13 +8,11 @@ abstract class AuthState extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Initial state
 class AuthInitial extends AuthState {}
 
-/// Loading state
 class AuthLoading extends AuthState {}
 
-/// User successfully authenticated
+// User successfully authenticated
 class AuthAuthenticated extends AuthState {
   final UserModel user;
 
@@ -24,10 +22,10 @@ class AuthAuthenticated extends AuthState {
   List<Object?> get props => [user];
 }
 
-/// No user is logged in
+// No user is logged in
 class AuthUnauthenticated extends AuthState {}
 
-/// Authentication operation failed
+// Authentication operation failed
 class AuthFailure extends AuthState {
   final String message;
 
@@ -37,11 +35,6 @@ class AuthFailure extends AuthState {
   List<Object?> get props => [message];
 }
 
-/// Operation completed successfully
-///
-/// Used mainly for Forgot Password because
-/// we don't want to navigate to the authenticated
-/// part of the app after sending a reset email.
 class AuthSuccess extends AuthState {
   final String message;
 

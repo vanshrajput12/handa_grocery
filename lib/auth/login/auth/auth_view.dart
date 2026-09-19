@@ -47,7 +47,8 @@ class _AuthViewState extends State<AuthView> {
       context.read<AuthBloc>().add(
         AuthSignupRequested(
           email: _emailController.text.trim(),
-          password: _passwordController.text, name: '',
+          password: _passwordController.text,
+          name: '',
         ),
       );
     }
@@ -56,7 +57,7 @@ class _AuthViewState extends State<AuthView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal.shade100,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
@@ -85,21 +86,19 @@ class _AuthViewState extends State<AuthView> {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         fontSize: 22,
-                        color: Colors.black,
+                        color: Colors.orange,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 2),
                     Text(
                       "Reliable. Best. Faster.",
                       style: GoogleFonts.poppins(
                         fontSize: 16,
-                        color: Colors.grey.shade700,
+                        color: Colors.black,
                         fontWeight: FontWeight(500),
                       ),
                     ),
                     SizedBox(height: 50),
-
                     Center(
                       child: Image.asset(
                         "assets/icons/software-update.png",
@@ -108,26 +107,22 @@ class _AuthViewState extends State<AuthView> {
                       ),
                     ),
 
-                    const SizedBox(height: 16),
-
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 20),
                     TextField(
                       controller: _emailController,
                       style: GoogleFonts.poppins(
-                          color: Colors.white, fontWeight: FontWeight(600)
+                        color: Colors.white,
+                        fontWeight: FontWeight(600),
                       ),
                       decoration: InputDecoration(
                         hintText: "Qwerty@gmail.com",
-
                         hintStyle: const TextStyle(color: Colors.white),
                         filled: true,
                         fillColor: Colors.grey.shade500,
-
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
                           borderSide: const BorderSide(color: Colors.grey),
                         ),
-
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
                           borderSide: const BorderSide(
@@ -140,7 +135,8 @@ class _AuthViewState extends State<AuthView> {
                     const SizedBox(height: 16),
                     TextFormField(
                       style: GoogleFonts.poppins(
-                        color: Colors.white, fontWeight: FontWeight(600)
+                        color: Colors.white,
+                        fontWeight: FontWeight(600),
                       ),
                       controller: _passwordController,
                       obscureText: _obscurePassword,
@@ -159,12 +155,10 @@ class _AuthViewState extends State<AuthView> {
                         hintStyle: const TextStyle(color: Colors.white),
                         filled: true,
                         fillColor: Colors.grey.shade500,
-
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
                           borderSide: const BorderSide(color: Colors.grey),
                         ),
-
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
                           borderSide: const BorderSide(
@@ -181,10 +175,14 @@ class _AuthViewState extends State<AuthView> {
                       ),
                       child: GestureDetector(
                         onTap: () {
+                          final authBloc = context.read<AuthBloc>();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ForgotPassword(),
+                              builder: (context) => BlocProvider.value(
+                                value: authBloc,
+                                child: const ForgotPassword(),
+                              ),
                             ),
                           );
                         },
@@ -193,6 +191,7 @@ class _AuthViewState extends State<AuthView> {
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight(700),
                             fontSize: 14,
+                            color: Colors.orange
                           ),
                         ),
                       ),

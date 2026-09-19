@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 import '../auth_bloc.dart';
 import '../auth_event.dart';
@@ -13,8 +15,7 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  final TextEditingController emailController =
-  TextEditingController();
+  final TextEditingController emailController = TextEditingController();
 
   @override
   void dispose() {
@@ -50,22 +51,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal.shade100,
+      backgroundColor: Colors.white,
 
       // ========================================================
       // APP BAR
       // ========================================================
 
-      appBar: AppBar(
-        title: const Text(
-          'Forgot Password',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.teal.shade100,
-        elevation: 0,
-      ),
+
 
       // ========================================================
       // BODY
@@ -102,56 +94,34 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         },
 
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(30),
 
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
               const SizedBox(height: 40),
 
-              // ==================================================
-              // TITLE
-              // ==================================================
-
-              const Text(
+              Lottie.asset("assets/animations/forgotPassword.json", height: 300),
+              const SizedBox(height: 40),
+               Text(
                 'Forgot Password?',
-                style: TextStyle(
-                  fontSize: 30,
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
-              const SizedBox(height: 12),
-
+              const SizedBox(height: 6),
               Text(
                 'Enter your registered email address and we will send you a password reset link.',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 15,
                   color: Colors.grey.shade700,
-                  height: 1.5,
+                  fontWeight: FontWeight(600)
                 ),
               ),
 
               const SizedBox(height: 35),
 
-              // ==================================================
-              // EMAIL LABEL
-              // ==================================================
-
-              const Text(
-                'Email',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              // ==================================================
-              // EMAIL TEXT FIELD
-              // ==================================================
 
               TextField(
                 controller: emailController,
@@ -180,13 +150,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
+                    borderSide: BorderSide(
+                      color: Colors.grey
+                    ),
                   ),
 
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide: const BorderSide(
-                      color: Colors.teal,
+                      color: Colors.orange,
                       width: 2,
                     ),
                   ),
@@ -232,9 +204,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         ),
                       )
 
-                          : const Text(
+                          :  Text(
                         'Send Reset Link',
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
