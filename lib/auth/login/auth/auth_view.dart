@@ -87,7 +87,7 @@ class _AuthViewState extends State<AuthView> {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         fontSize: 22,
-                        color: Colors.orange,
+                        color: Colors.yellow.shade700,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -120,13 +120,13 @@ class _AuthViewState extends State<AuthView> {
                         filled: true,
                         fillColor: Colors.grey.shade500,
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(34),
                           borderSide: const BorderSide(color: Colors.grey),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: const BorderSide(
-                            color: Colors.orange,
+                          borderRadius: BorderRadius.circular(34),
+                          borderSide:  BorderSide(
+                            color: Colors.yellow.shade700,
                             width: 2,
                           ),
                         ),
@@ -156,13 +156,13 @@ class _AuthViewState extends State<AuthView> {
                         filled: true,
                         fillColor: Colors.grey.shade500,
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(34),
                           borderSide: const BorderSide(color: Colors.grey),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: const BorderSide(
-                            color: Colors.orange,
+                          borderRadius: BorderRadius.circular(34),
+                          borderSide:  BorderSide(
+                            color: Colors.yellow.shade700,
                             width: 2,
                           ),
                         ),
@@ -191,7 +191,7 @@ class _AuthViewState extends State<AuthView> {
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight(700),
                             fontSize: 14,
-                            color: Colors.orange
+                            color: Colors.yellow.shade700
                           ),
                         ),
                       ),
@@ -204,7 +204,7 @@ class _AuthViewState extends State<AuthView> {
                         onPressed: isLoading ? null : _submit,
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(24),
+                            borderRadius: BorderRadiusGeometry.circular(34),
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           backgroundColor: Colors.white,
