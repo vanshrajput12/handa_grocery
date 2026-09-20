@@ -75,16 +75,23 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             children: [
               const SizedBox(height: 40),
 
-              Lottie.asset(
-                "assets/animations/forgotPassword.json",
-                height: 300,
+              Padding(
+                padding: const EdgeInsets.only(left: 30.0),
+                child: Lottie.asset(
+                  "assets/animations/forgotPassword.json",
+                  height: 300,
+                ),
               ),
-              const SizedBox(height: 40),
-              Text(
-                'Forgot Password?',
-                style: GoogleFonts.poppins(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: Text(
+                  'Forgot Password?',
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    color: Colors.yellow.shade700,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 6),
@@ -122,13 +129,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     borderSide: BorderSide.none,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(34),
                     borderSide: const BorderSide(color: Colors.grey),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    borderSide: const BorderSide(
-                      color: Colors.orange,
+                    borderRadius: BorderRadius.circular(34),
+                    borderSide:  BorderSide(
+                      color: Colors.yellow.shade700,
                       width: 2,
                     ),
                   ),
@@ -154,7 +161,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(34),
                         ),
                       ),
                       child: isLoading
@@ -180,19 +187,20 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
 
               const SizedBox(height: 20),
-              Center(
-                child: TextButton(
-                  onPressed: () {
+              Padding(
+                padding:  EdgeInsets.only(left: MediaQuery.of(context).size.width/4),
+                child: GestureDetector(
+                  onTap: () {
                     Navigator.pop(context);
                   },
                   child: Row(
                     children: [
-                      Icon(Icons.arrow_back_outlined, size: 20),
+                      Icon(Icons.arrow_back_outlined, size: 20, color: Colors.black,),
                       SizedBox(width: 5),
-                      const Text(
+                       Text(
                         'Back to Login',
                         style: TextStyle(
-                          color: Colors.orange,
+                          color: Colors.yellow.shade700,
                           fontWeight: FontWeight.w800,
                           fontSize: 15,
                         ),
