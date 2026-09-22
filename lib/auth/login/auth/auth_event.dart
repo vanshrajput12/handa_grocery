@@ -1,51 +1,56 @@
-abstract class AuthEvent {}
-
-// Check whether a user is already logged in
-class AuthCheckedRequested extends AuthEvent {}
-
-// Login with email and password
-class AuthLoginRequested extends AuthEvent {
-  final String email;
-  final String password;
-
-  AuthLoginRequested({
-    required this.email,
-    required this.password,
-  });
+abstract class AuthEvent {
+  const AuthEvent();
 }
 
-// Create a new account
-class AuthSignupRequested extends AuthEvent {
-  final String name;
-  final String email;
-  final String password;
-
-  AuthSignupRequested({
-    required this.name,
-    required this.email,
-    required this.password,
-  });
+/// Check whether a user is already logged in.
+class AuthCheckedRequested extends AuthEvent {
+  const AuthCheckedRequested();
 }
 
-// Login if account exists, otherwise create account
+/// Try to create an account first.
+/// If email already exists, AuthBloc will automatically try login.
 class AuthLoginOrSignupRequested extends AuthEvent {
   final String email;
   final String password;
 
-  AuthLoginOrSignupRequested({
+  const AuthLoginOrSignupRequested({
     required this.email,
     required this.password,
   });
 }
 
-// Send password reset email
+/// Normal login event.
+class AuthLoginRequested extends AuthEvent {
+  final String email;
+  final String password;
+
+  const AuthLoginRequested({
+    required this.email,
+    required this.password,
+  });
+}
+
+/// Normal signup event.
+class AuthSignupRequested extends AuthEvent {
+  final String email;
+  final String password;
+
+  const AuthSignupRequested({
+    required this.email,
+    required this.password,
+  });
+}
+
+/// Forgot password event.
 class AuthForgotPasswordRequested extends AuthEvent {
   final String email;
 
-  AuthForgotPasswordRequested({
+  const AuthForgotPasswordRequested({
     required this.email,
   });
 }
 
-// Logout current user
-class AuthLogoutRequested extends AuthEvent {}
+/// Logout event.
+class AuthLogoutRequested extends AuthEvent {
+  const AuthLogoutRequested();
+}
