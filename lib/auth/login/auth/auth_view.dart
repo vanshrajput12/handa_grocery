@@ -44,15 +44,16 @@ class _AuthViewState extends State<AuthView> {
   }
 
   void _submit() {
-    if (_formKey.currentState!.validate()) {
-      context.read<AuthBloc>().add(
-        AuthSignupRequested(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-          name: '',
-        ),
-      );
+    if (!_formKey.currentState!.validate()) {
+      return;
     }
+
+    context.read<AuthBloc>().add(
+      AuthLoginOrSignupRequested(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      ),
+    );
   }
 
   @override
@@ -108,7 +109,18 @@ class _AuthViewState extends State<AuthView> {
                     ),
 
                     const SizedBox(height: 20),
-                    TextField(
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Email is required';
+                        }
+
+                        if (!value.contains('@') || !value.contains('.')) {
+                          return 'Enter a valid email';
+                        }
+
+                        return null;
+                      },
                       controller: _emailController,
                       style: GoogleFonts.poppins(
                         color: Colors.white,
@@ -134,6 +146,12 @@ class _AuthViewState extends State<AuthView> {
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Password is required';
+                        }
+                        return null;
+                      },
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontWeight: FontWeight(600),

@@ -82,7 +82,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       final user = await authRepository.signup(
-        name: event.name.trim(),
+
         email: event.email.trim(),
         password: event.password,
       );

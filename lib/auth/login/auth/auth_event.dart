@@ -10,7 +10,8 @@ class AuthLoginRequested extends AuthEvent {
 
   AuthLoginRequested({
     required this.email,
-    required this.password});
+    required this.password,
+  });
 }
 
 // Create a new account
@@ -26,11 +27,24 @@ class AuthSignupRequested extends AuthEvent {
   });
 }
 
+// Login if account exists, otherwise create account
+class AuthLoginOrSignupRequested extends AuthEvent {
+  final String email;
+  final String password;
+
+  AuthLoginOrSignupRequested({
+    required this.email,
+    required this.password,
+  });
+}
+
 // Send password reset email
 class AuthForgotPasswordRequested extends AuthEvent {
   final String email;
 
-  AuthForgotPasswordRequested({required this.email});
+  AuthForgotPasswordRequested({
+    required this.email,
+  });
 }
 
 // Logout current user

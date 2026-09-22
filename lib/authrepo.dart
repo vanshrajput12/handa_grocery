@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+
 import 'models/UserModel.dart';
 
 class AuthRepository {
@@ -46,6 +48,7 @@ class AuthRepository {
         throw 'Please enter your password.';
       }
 
+      // Firebase login
       final credential =
       await _firebaseAuth.signInWithEmailAndPassword(
         email: cleanEmail,
@@ -94,20 +97,14 @@ class AuthRepository {
   // ============================================================
 
   Future<UserModel> signup({
-    required String name,
     required String email,
     required String password,
   }) async {
     try {
-      final cleanName = name.trim();
       final cleanEmail = email.trim();
       final cleanPassword = password;
 
       // Validate before Firebase
-      if (cleanName.isEmpty) {
-        throw 'Please enter your name.';
-      }
-
       if (cleanEmail.isEmpty) {
         throw 'Please enter your email.';
       }
@@ -120,6 +117,7 @@ class AuthRepository {
         throw 'Password must be at least 6 characters.';
       }
 
+      // Create Firebase account
       final credential =
       await _firebaseAuth.createUserWithEmailAndPassword(
         email: cleanEmail,
@@ -128,21 +126,173 @@ class AuthRepository {
 
       final user = credential.user!;
 
-      // Save name in Firebase Authentication
-      await user.updateDisplayName(cleanName);
-
-      // Save name + email + UID in Firestore
+      // Save user in Firestore
       await _firestore.collection('users').doc(user.uid).set({
         'uid': user.uid,
-        'name': cleanName,
+        'email': user.email ?? cleanEmail,
+      });
+
+      return UserModel.fromFirebaseUser(user);
+    } on FirebaseAuthException catch (e) {
+      throw _mapFirebaseError(e);
+    }
+  }
+
+  // ============================================================
+  // LOGIN OR SIGNUP
+  //
+  // If account exists:
+  //     Login
+  //
+  // If account does not exist:
+  //     Create account
+  // ============================================================
+
+  Future<UserModel> loginOrSignup({
+    required String email,
+    required String password,
+  }) async {
+    final cleanEmail = email.trim();
+
+    // ------------------------------------------------------------
+    // Validate email
+    // ------------------------------------------------------------
+
+    if (cleanEmail.isEmpty) {
+      throw 'Please enter your email.';
+    }
+
+    // ------------------------------------------------------------
+    // Validate password
+    // ------------------------------------------------------------
+
+    if (password.isEmpty) {
+      throw 'Please enter your password.';
+    }
+
+    if (password.length < 6) {
+      throw 'Password must be at least 6 characters.';
+    }
+
+    try {
+      // ==========================================================
+      // STEP 1
+      // Try to CREATE a new account
+      // ==========================================================
+
+      final credential =
+      await _firebaseAuth.createUserWithEmailAndPassword(
+        email: cleanEmail,
+        password: password,
+      );
+
+      // ==========================================================
+      // NEW USER CREATED
+      // ==========================================================
+
+      final user = credential.user!;
+
+      debugPrint('=================================');
+      debugPrint('NEW ACCOUNT CREATED');
+      debugPrint('UID: ${user.uid}');
+      debugPrint('EMAIL: ${user.email}');
+      debugPrint('=================================');
+
+      // Save new user to Firestore
+      await _firestore.collection('users').doc(user.uid).set({
+        'uid': user.uid,
+        'name': user.displayName ?? '',
         'email': user.email ?? cleanEmail,
       });
 
       return UserModel.fromFirebaseUser(
         user,
-        name: cleanName,
+        name: user.displayName ?? '',
       );
     } on FirebaseAuthException catch (e) {
+      // ==========================================================
+      // STEP 2
+      // Account already exists
+      // ==========================================================
+
+      if (e.code == 'email-already-in-use') {
+        debugPrint(
+          'Account already exists.',
+        );
+
+        debugPrint(
+          'Trying to login with existing account...',
+        );
+
+        try {
+          // ========================================================
+          // LOGIN EXISTING USER
+          // ========================================================
+
+          final loginCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
+            email: cleanEmail,
+            password: password,
+          );
+
+          final user = loginCredential.user!;
+
+          // ========================================================
+          // Get existing Firestore user
+          // ========================================================
+
+          final userDoc = await _firestore
+              .collection('users')
+              .doc(user.uid)
+              .get();
+
+          String name = user.displayName ?? '';
+
+          if (userDoc.exists) {
+            final data = userDoc.data();
+
+            if (data != null && data['name'] != null) {
+              name = data['name'].toString();
+            }
+          }
+
+          // ========================================================
+          // Update existing user information
+          // ========================================================
+
+          await _firestore
+              .collection('users')
+              .doc(user.uid)
+              .set(
+            {
+              'uid': user.uid,
+              'name': name,
+              'email': user.email ?? cleanEmail,
+            },
+            SetOptions(merge: true),
+          );
+
+          debugPrint('=================================');
+          debugPrint('EXISTING ACCOUNT LOGIN');
+          debugPrint('UID: ${user.uid}');
+          debugPrint('NAME: $name');
+          debugPrint('EMAIL: ${user.email}');
+          debugPrint('=================================');
+
+          return UserModel.fromFirebaseUser(
+            user,
+            name: name,
+          );
+        } on FirebaseAuthException catch (loginError) {
+          // Existing email but wrong password
+          throw _mapFirebaseError(loginError);
+        }
+      }
+
+      // ==========================================================
+      // Some other Firebase error
+      // ==========================================================
+
       throw _mapFirebaseError(e);
     }
   }
@@ -157,8 +307,7 @@ class AuthRepository {
     try {
       final cleanEmail = email.trim();
 
-      // IMPORTANT:
-      // Don't send empty email to Firebase.
+      // Don't send empty email to Firebase
       if (cleanEmail.isEmpty) {
         throw 'Please enter your email.';
       }
@@ -213,7 +362,8 @@ class AuthRepository {
         return 'Network error. Please check your internet connection.';
 
       default:
-        return e.message ?? 'Something went wrong. Please try again.';
+        return e.message ??
+            'Something went wrong. Please try again.';
     }
   }
 }
