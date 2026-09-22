@@ -187,13 +187,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
 
               const SizedBox(height: 20),
-              Padding(
-                padding:  EdgeInsets.only(left: MediaQuery.of(context).size.width/4),
-                child: GestureDetector(
+
+                 GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(Icons.arrow_back_outlined, size: 20, color: Colors.black,),
                       SizedBox(width: 5),
@@ -208,7 +209,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     ],
                   ),
                 ),
-              ),
+
             ],
           ),
         ),
