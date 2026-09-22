@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handa_grocery/auth/login/auth/forgot_password_page/forgot_password.dart';
+import 'package:handa_grocery/bottom%20Nav/Bottom_Nav.dart';
 import 'package:handa_grocery/pages/home_page.dart';
 import 'package:lottie/lottie.dart';
 
@@ -80,7 +81,7 @@ class _AuthViewState extends State<AuthView> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HomePage(),
+                  builder: (context) => BottomNav(),
                 ),
               );
             }
