@@ -256,14 +256,7 @@ class ProfilePage extends StatelessWidget {
                 },
               ),
 
-              ProfileCardHelper(
-                icon: Icons.info_outline_rounded,
-                title: "About Handa Grocery",
-                subtitle: "App information",
-                onTap: () {
-                  // About
-                },
-              ),
+
 
               const SizedBox(height: 20),
 
