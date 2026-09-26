@@ -13,15 +13,15 @@ class ProfilePage extends StatelessWidget {
     final User? currentUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      backgroundColor: Colors.teal.shade100,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.teal.shade100,
+        backgroundColor: Colors.amber,
         elevation: 0,
         centerTitle: false,
         title: Text(
-          "My Profile",
+          "MY PROFILE",
           style: GoogleFonts.poppins(
-            fontSize: 22,
+            fontSize: 21,
             fontWeight: FontWeight.w700,
             color: Colors.black,
           ),
@@ -57,9 +57,9 @@ class ProfilePage extends StatelessWidget {
                       width: 85,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.teal.shade50,
+                        color: Colors.amber.shade50,
                         border: Border.all(
-                          color: Colors.teal.shade200,
+                          color: Colors.amber.shade200,
                           width: 3,
                         ),
                       ),
@@ -67,7 +67,7 @@ class ProfilePage extends StatelessWidget {
                       child: Icon(
                         Icons.person_rounded,
                         size: 48,
-                        color: Colors.teal.shade700,
+                        color: Colors.amber.shade700,
                       ),
                     ),
 
@@ -169,9 +169,9 @@ class ProfilePage extends StatelessWidget {
                         ),
 
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.teal.shade700,
+                          foregroundColor: Colors.amber.shade700,
                           side: BorderSide(
-                            color: Colors.teal.shade300,
+                            color: Colors.amber.shade300,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),

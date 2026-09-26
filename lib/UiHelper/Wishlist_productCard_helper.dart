@@ -61,7 +61,7 @@ class _WishlistProductCardHelperState extends State<WishlistProductCardHelper> {
                     margin: const EdgeInsets.all(8),
 
                     decoration: BoxDecoration(
-                      color: Colors.teal.shade50,
+                      color: Colors.amber.shade50,
                       borderRadius: BorderRadius.circular(19),
                     ),
 
@@ -79,7 +79,7 @@ class _WishlistProductCardHelperState extends State<WishlistProductCardHelper> {
                             return Icon(
                               Icons.image_not_supported_outlined,
                               size: 55,
-                              color: Colors.teal.shade300,
+                              color: Colors.amber.shade300,
                             );
                           },
                         ),
@@ -160,7 +160,7 @@ class _WishlistProductCardHelperState extends State<WishlistProductCardHelper> {
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Colors.teal.shade700,
+                      color: Colors.green,
                     ),
                   ),
 

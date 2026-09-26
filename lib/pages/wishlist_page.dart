@@ -11,9 +11,9 @@ class WishlistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5FAF9),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.teal.shade100,
+        backgroundColor: Colors.amber,
         elevation: 0,
         centerTitle: false,
         title: Column(
@@ -101,7 +101,7 @@ class WishlistPage extends StatelessWidget {
                       width: 125,
                       height: 125,
                       decoration: BoxDecoration(
-                        color: Colors.teal.shade50,
+                        color: Colors.amber.shade50,
                         shape: BoxShape.circle,
                       ),
                       child: Stack(
@@ -110,7 +110,7 @@ class WishlistPage extends StatelessWidget {
                           Icon(
                             Icons.favorite_border_rounded,
                             size: 65,
-                            color: Colors.teal.shade400,
+                            color: Colors.amber.shade400,
                           ),
 
                           Positioned(
@@ -164,7 +164,7 @@ class WishlistPage extends StatelessWidget {
                         vertical: 7,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.teal.shade50,
+                        color: Colors.amber.shade50,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
@@ -180,7 +180,7 @@ class WishlistPage extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: Colors.teal.shade800,
+                              color: Colors.amber.shade800,
                             ),
                           ),
                         ],

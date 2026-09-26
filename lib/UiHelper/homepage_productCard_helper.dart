@@ -23,7 +23,7 @@ class HomePageCardItem extends StatelessWidget {
 
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade300,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
@@ -46,7 +46,7 @@ class HomePageCardItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(17),
                   child: Container(
                     width: double.infinity,
-                    color: const Color(0xFFF5F5F5),
+                    color: Colors.amber.shade50,
 
                     child: Image.asset(
                       cardItemModel.image,
@@ -122,7 +122,7 @@ class HomePageCardItem extends StatelessWidget {
                           height: 36,
                           width: 36,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.black,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: IconButton(
@@ -132,7 +132,7 @@ class HomePageCardItem extends StatelessWidget {
                             },
                             icon: const Icon(
                               Icons.add_rounded,
-                              color: Colors.black,
+                              color: Colors.white,
                               size: 21,
                             ),
                           ),

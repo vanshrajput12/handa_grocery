@@ -33,11 +33,11 @@ class ProfileCardHelper extends StatelessWidget {
           width: 44,
 
           decoration: BoxDecoration(
-            color: Colors.teal.shade50,
+            color: Colors.amber.shade50,
             borderRadius: BorderRadius.circular(13),
           ),
 
-          child: Icon(icon, color: Colors.teal.shade700, size: 22),
+          child: Icon(icon, color: Colors.amber.shade700, size: 22),
         ),
 
         title: Text(
