@@ -23,7 +23,7 @@ class HomePageCardItem extends StatelessWidget {
 
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.grey.shade300,
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
@@ -113,7 +113,7 @@ class HomePageCardItem extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
-                            color: Colors.teal.shade700,
+                            color: Colors.green,
                           ),
                         ),
 
@@ -122,7 +122,7 @@ class HomePageCardItem extends StatelessWidget {
                           height: 36,
                           width: 36,
                           decoration: BoxDecoration(
-                            color: Colors.black,
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: IconButton(
@@ -132,7 +132,7 @@ class HomePageCardItem extends StatelessWidget {
                             },
                             icon: const Icon(
                               Icons.add_rounded,
-                              color: Colors.white,
+                              color: Colors.black,
                               size: 21,
                             ),
                           ),

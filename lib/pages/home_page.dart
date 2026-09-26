@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.teal.shade100,
+        backgroundColor: Colors.white,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> {
               "Handa Grocery",
               style: GoogleFonts.poppins(
                 fontSize: 18,
+                color: Colors.amber,
                 fontWeight: FontWeight(700),
               ),
             ),
@@ -43,7 +44,7 @@ class _HomePageState extends State<HomePage> {
         actionsPadding: EdgeInsets.only(right: 24),
         actions: [Icon(Icons.notifications)],
       ),
-      backgroundColor: Colors.teal.shade100,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -61,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                           width: MediaQuery.of(context).size.width / 1.3,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(34),
-                            color: Colors.white,
+                            color: Colors.grey.shade200,
                             border: Border.all(color: Colors.white),
                           ),
                           child: TextField(
@@ -79,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                           height: 50,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(34),
-                            color: Colors.black,
+                            color: Colors.amber,
                             border: Border.all(color: Colors.white, width: 1.2),
                           ),
                           child: IconButton(
