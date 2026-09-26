@@ -86,7 +86,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
-
   void _showMessage(String message, {required IconData icon}) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
@@ -122,8 +121,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final product = widget.product;
 
     return Scaffold(
-      backgroundColor: Colors.teal.shade100,
-
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(Icons.keyboard_arrow_left_outlined, size: 30),
+        ),
+        backgroundColor: Colors.amber,
+        elevation: 0,
+        centerTitle: false,
+        title: Text(
+          "PRODUCT DETAIL",
+          style: GoogleFonts.poppins(
+            fontSize: 21,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Stack(
           children: [
@@ -157,30 +174,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     width: 180,
                                     height: 180,
                                     decoration: BoxDecoration(
-                                      color: Colors.teal.shade50,
+                                      color: Colors.amber.shade50,
                                       shape: BoxShape.circle,
                                     ),
 
                                     child: Icon(
                                       Icons.image_not_supported_outlined,
                                       size: 70,
-                                      color: Colors.teal.shade300,
+                                      color: Colors.amber.shade300,
                                     ),
                                   );
                                 },
                               ),
                             ),
-                          ),
-                        ),
-                        // back arrow
-                        Positioned(
-                          top: 15,
-                          left: 18,
-                          child: _circleButton(
-                            icon: Icons.arrow_back_ios_new_rounded,
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
                           ),
                         ),
                         // fav icon
@@ -207,7 +213,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.teal.shade50,
+                              color: Colors.amber.shade50,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
@@ -216,7 +222,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 Icon(
                                   Icons.shopping_basket_outlined,
                                   size: 16,
-                                  color: Colors.teal.shade700,
+                                  color: Colors.amber.shade700,
                                 ),
 
                                 const SizedBox(width: 6),
@@ -226,7 +232,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   style: GoogleFonts.poppins(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.teal.shade700,
+                                    color: Colors.amber.shade700,
                                   ),
                                 ),
                               ],
@@ -236,8 +242,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ],
                     ),
                   ),
-
-                  const SizedBox(height: 22),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
@@ -333,16 +337,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         // -----------------------------------------------------
                         // PRICE
                         // -----------------------------------------------------
-
-                            Text(
-                              "₹${product.price}",
-                              style: GoogleFonts.poppins(
-                                fontSize: 29,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.teal.shade700,
-                              ),
-                            ),
-
+                        Text(
+                          "₹${product.price}",
+                          style: GoogleFonts.poppins(
+                            fontSize: 29,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.green,
+                          ),
+                        ),
 
                         const SizedBox(height: 25),
 
@@ -378,13 +380,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     height: 40,
 
                                     decoration: BoxDecoration(
-                                      color: Colors.teal.shade50,
+                                      color: Colors.amber.shade50,
                                       borderRadius: BorderRadius.circular(12),
                                     ),
 
                                     child: Icon(
                                       Icons.info_outline_rounded,
-                                      color: Colors.teal.shade700,
+                                      color: Colors.amber.shade700,
                                     ),
                                   ),
 
@@ -498,7 +500,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           padding: const EdgeInsets.all(16),
 
                           decoration: BoxDecoration(
-                            color: Colors.teal.shade50,
+                            color: Colors.amber.shade50,
                             borderRadius: BorderRadius.circular(20),
                           ),
 
@@ -515,7 +517,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                                 child: Icon(
                                   Icons.local_shipping_outlined,
-                                  color: Colors.teal.shade700,
+                                  color: Colors.amber.shade700,
                                 ),
                               ),
 
@@ -718,7 +720,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         width: 42,
         height: 42,
 
-        child: Icon(icon, size: 19, color: Colors.teal.shade700),
+        child: Icon(icon, size: 19, color: Colors.amber.shade700),
       ),
     );
   }
