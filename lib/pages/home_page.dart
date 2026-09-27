@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handa_grocery/UiHelper/homepage_productCard_helper.dart';
 import 'package:handa_grocery/models/CardItem_model.dart';
+import 'package:handa_grocery/pages/cart_page.dart';
 import 'package:handa_grocery/services/product_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -42,7 +43,32 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         actionsPadding: EdgeInsets.only(right: 24),
-        actions: [Icon(Icons.notifications)],
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartScreen(),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.shopping_cart_outlined,
+              color: Colors.black,
+            ),
+          ),
+
+          IconButton(
+            onPressed: () {
+              // Your existing notification action
+            },
+            icon: const Icon(
+              Icons.notifications_none_rounded,
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
