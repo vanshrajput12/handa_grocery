@@ -89,7 +89,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   'Forgot Password?',
                   style: GoogleFonts.poppins(
                     fontSize: 22,
-                    color: Colors.yellow.shade700,
+                    color: Colors.amber,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -135,7 +135,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(34),
                     borderSide:  BorderSide(
-                      color: Colors.yellow.shade700,
+                      color: Colors.amber,
                       width: 2,
                     ),
                   ),
@@ -201,7 +201,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                        Text(
                         'Back to Login',
                         style: TextStyle(
-                          color: Colors.yellow.shade700,
+                          color: Colors.amber,
                           fontWeight: FontWeight.w800,
                           fontSize: 15,
                         ),

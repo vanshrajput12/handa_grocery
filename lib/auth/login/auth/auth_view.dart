@@ -127,7 +127,7 @@ class _AuthViewState extends State<AuthView> {
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           fontSize: 22,
-                          color: Colors.yellow.shade700,
+                          color: Colors.amber,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -269,7 +269,7 @@ class _AuthViewState extends State<AuthView> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(34),
                             borderSide: BorderSide(
-                              color: Colors.yellow.shade700,
+                              color: Colors.amber,
                               width: 2,
                             ),
                           ),
@@ -318,7 +318,7 @@ class _AuthViewState extends State<AuthView> {
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w700,
                               fontSize: 14,
-                              color: Colors.yellow.shade700,
+                              color: Colors.amber,
                             ),
                           ),
                         ),

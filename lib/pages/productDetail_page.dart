@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handa_grocery/models/CardItem_model.dart';
+import '../services/cart_service.dart';
 import '../services/wishlist_service.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -625,6 +626,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                         child: ElevatedButton(
                           onPressed: () {
+                            CartService().addToCart(
+                              product,
+                              quantity: quantity,
+                            );
+
                             _showMessage(
                               "${product.text} added to cart",
                               icon: Icons.shopping_cart_rounded,
