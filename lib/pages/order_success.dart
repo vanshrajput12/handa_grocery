@@ -1,31 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'home_page.dart';
-import 'order_detail.dart';
+import 'package:handa_grocery/bottom%20Nav/Bottom_Nav.dart';
 import 'order_detail_screen.dart';
 
 class OrderSuccessScreen extends StatelessWidget {
   final String orderId;
 
-  const OrderSuccessScreen({
-    super.key,
-    required this.orderId,
-  });
+  const OrderSuccessScreen({super.key, required this.orderId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
-
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 22,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 22),
 
                 child: Column(
                   children: [
@@ -34,7 +26,6 @@ class OrderSuccessScreen extends StatelessWidget {
                     // =====================================================
                     // SUCCESS ICON
                     // =====================================================
-
                     Container(
                       width: 110,
                       height: 110,
@@ -65,7 +56,6 @@ class OrderSuccessScreen extends StatelessWidget {
                     // =====================================================
                     // TITLE
                     // =====================================================
-
                     Text(
                       "Order Placed!",
                       textAlign: TextAlign.center,
@@ -78,11 +68,6 @@ class OrderSuccessScreen extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 10),
-
-                    // =====================================================
-                    // DESCRIPTION
-                    // =====================================================
-
                     Text(
                       "Thank you for shopping with Handa Grocery.\nYour order has been placed successfully.",
                       textAlign: TextAlign.center,
@@ -95,11 +80,6 @@ class OrderSuccessScreen extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 30),
-
-                    // =====================================================
-                    // ORDER INFORMATION CARD
-                    // =====================================================
-
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
@@ -110,9 +90,7 @@ class OrderSuccessScreen extends StatelessWidget {
 
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(
-                              alpha: 0.04,
-                            ),
+                            color: Colors.black.withValues(alpha: 0.04),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
                           ),
@@ -122,7 +100,6 @@ class OrderSuccessScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           // ORDER ID
-
                           _infoRow(
                             icon: Icons.receipt_long_outlined,
                             title: "Order ID",
@@ -131,14 +108,11 @@ class OrderSuccessScreen extends StatelessWidget {
 
                           const SizedBox(height: 18),
 
-                          Divider(
-                            color: Colors.grey.shade200,
-                          ),
+                          Divider(color: Colors.grey.shade200),
 
                           const SizedBox(height: 18),
 
                           // PAYMENT
-
                           _infoRow(
                             icon: Icons.payments_outlined,
                             title: "Payment Method",
@@ -147,20 +121,16 @@ class OrderSuccessScreen extends StatelessWidget {
 
                           const SizedBox(height: 18),
 
-                          Divider(
-                            color: Colors.grey.shade200,
-                          ),
+                          Divider(color: Colors.grey.shade200),
 
                           const SizedBox(height: 18),
 
                           // STATUS
-
                           _infoRow(
                             icon: Icons.check_circle_outline,
                             title: "Order Status",
                             value: "Order Placed",
-                            valueColor:
-                            Colors.green.shade700,
+                            valueColor: Colors.green.shade700,
                           ),
                         ],
                       ),
@@ -171,7 +141,6 @@ class OrderSuccessScreen extends StatelessWidget {
                     // =====================================================
                     // COD INFORMATION
                     // =====================================================
-
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
@@ -179,14 +148,11 @@ class OrderSuccessScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.amber.shade50,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: Colors.amber.shade100,
-                        ),
+                        border: Border.all(color: Colors.amber.shade100),
                       ),
 
                       child: Row(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
 
                         children: [
                           Container(
@@ -195,8 +161,7 @@ class OrderSuccessScreen extends StatelessWidget {
 
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius:
-                              BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10),
                             ),
 
                             child: Icon(
@@ -210,8 +175,7 @@ class OrderSuccessScreen extends StatelessWidget {
 
                           Expanded(
                             child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
 
                               children: [
                                 Text(
@@ -219,8 +183,7 @@ class OrderSuccessScreen extends StatelessWidget {
 
                                   style: GoogleFonts.poppins(
                                     fontSize: 13,
-                                    fontWeight:
-                                    FontWeight.w700,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
 
@@ -229,12 +192,10 @@ class OrderSuccessScreen extends StatelessWidget {
                                 Text(
                                   "Please keep the order amount ready when your order arrives.",
 
-                                  style:
-                                  GoogleFonts.poppins(
+                                  style: GoogleFonts.poppins(
                                     fontSize: 11,
                                     height: 1.5,
-                                    color:
-                                    Colors.grey.shade700,
+                                    color: Colors.grey.shade700,
                                   ),
                                 ),
                               ],
@@ -249,27 +210,13 @@ class OrderSuccessScreen extends StatelessWidget {
                 ),
               ),
             ),
-
-            // =============================================================
-            // BOTTOM BUTTONS
-            // =============================================================
-
             Container(
-              padding: const EdgeInsets.fromLTRB(
-                20,
-                15,
-                20,
-                15,
-              ),
-
+              padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
               decoration: BoxDecoration(
                 color: Colors.white,
-
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(
-                      alpha: 0.07,
-                    ),
+                    color: Colors.black.withValues(alpha: 0.07),
                     blurRadius: 15,
                     offset: const Offset(0, -4),
                   ),
@@ -278,13 +225,8 @@ class OrderSuccessScreen extends StatelessWidget {
 
               child: SafeArea(
                 top: false,
-
                 child: Column(
                   children: [
-                    // ===================================================
-                    // VIEW ORDER
-                    // ===================================================
-
                     SizedBox(
                       width: double.infinity,
                       height: 54,
@@ -295,9 +237,7 @@ class OrderSuccessScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (_) =>
-                                  OrderDetailScreen(
-                                    orderId: orderId,
-                                  ),
+                                  OrderDetailScreen(orderId: orderId),
                             ),
                           );
                         },
@@ -307,33 +247,25 @@ class OrderSuccessScreen extends StatelessWidget {
                           foregroundColor: Colors.white,
                           elevation: 0,
 
-                          shape:
-                          RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.circular(16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
                           ),
                         ),
 
                         child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
 
                           children: [
-                            const Icon(
-                              Icons.receipt_long_outlined,
-                              size: 20,
-                            ),
+                            const Icon(Icons.receipt_long_outlined, size: 20),
 
                             const SizedBox(width: 9),
 
                             Text(
                               "View Order",
 
-                              style:
-                              GoogleFonts.poppins(
+                              style: GoogleFonts.poppins(
                                 fontSize: 14,
-                                fontWeight:
-                                FontWeight.w700,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ],
@@ -342,11 +274,6 @@ class OrderSuccessScreen extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 12),
-
-                    // ===================================================
-                    // CONTINUE SHOPPING
-                    // ===================================================
-
                     SizedBox(
                       width: double.infinity,
                       height: 54,
@@ -357,16 +284,14 @@ class OrderSuccessScreen extends StatelessWidget {
                             context,
 
                             MaterialPageRoute(
-                              builder: (_) =>
-                              const HomePage(),
+                              builder: (_) => const BottomNav(),
                             ),
 
-                                (route) => false,
+                            (route) => false,
                           );
                         },
 
-                        style:
-                        OutlinedButton.styleFrom(
+                        style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.black,
 
                           side: BorderSide(
@@ -374,34 +299,25 @@ class OrderSuccessScreen extends StatelessWidget {
                             width: 1.2,
                           ),
 
-                          shape:
-                          RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.circular(16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
                           ),
                         ),
 
                         child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
 
                           children: [
-                            const Icon(
-                              Icons
-                                  .shopping_bag_outlined,
-                              size: 20,
-                            ),
+                            const Icon(Icons.shopping_bag_outlined, size: 20),
 
                             const SizedBox(width: 9),
 
                             Text(
                               "Continue Shopping",
 
-                              style:
-                              GoogleFonts.poppins(
+                              style: GoogleFonts.poppins(
                                 fontSize: 14,
-                                fontWeight:
-                                FontWeight.w600,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -439,19 +355,14 @@ class OrderSuccessScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
 
-          child: Icon(
-            icon,
-            size: 21,
-            color: Colors.grey.shade700,
-          ),
+          child: Icon(icon, size: 21, color: Colors.grey.shade700),
         ),
 
         const SizedBox(width: 12),
 
         Expanded(
           child: Column(
-            crossAxisAlignment:
-            CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
               Text(
@@ -474,8 +385,7 @@ class OrderSuccessScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color:
-                  valueColor ?? Colors.black,
+                  color: valueColor ?? Colors.black,
                 ),
               ),
             ],
