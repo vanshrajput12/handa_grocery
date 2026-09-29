@@ -20,11 +20,11 @@ class OrderDetailScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF7F7F7),
 
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.amber,
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Order Details',
+          'ORDER DETAILS',
           style: GoogleFonts.poppins(
             color: Colors.black,
             fontSize: 19,
