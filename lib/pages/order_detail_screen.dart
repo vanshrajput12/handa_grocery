@@ -7,10 +7,7 @@ import '../services/order_service.dart';
 class OrderDetailScreen extends StatelessWidget {
   final String orderId;
 
-  const OrderDetailScreen({
-    super.key,
-    required this.orderId,
-  });
+  const OrderDetailScreen({super.key, required this.orderId});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +15,6 @@ class OrderDetailScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
-
       appBar: AppBar(
         backgroundColor: Colors.amber,
         elevation: 0,
@@ -31,30 +27,22 @@ class OrderDetailScreen extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        iconTheme: const IconThemeData(
-          color: Colors.black,
-        ),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
 
       body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         future: orderService.getOrder(orderId),
-
         builder: (context, snapshot) {
           // Loading
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(
-                color: Colors.amber,
-              ),
+              child: CircularProgressIndicator(color: Colors.amber),
             );
           }
 
           // Error
           if (snapshot.hasError) {
-            return _errorView(
-              context,
-              snapshot.error.toString(),
-            );
+            return _errorView(context, snapshot.error.toString());
           }
 
           // No order
@@ -62,37 +50,27 @@ class OrderDetailScreen extends StatelessWidget {
             return _emptyView();
           }
 
-          final Map<String, dynamic> order =
-              snapshot.data!.data() ?? {};
+          final Map<String, dynamic> order = snapshot.data!.data() ?? {};
 
-          final List<dynamic> items =
-              order['items'] ?? [];
+          final List<dynamic> items = order['items'] ?? [];
 
           final Map<String, dynamic> deliveryAddress =
-          Map<String, dynamic>.from(
-            order['deliveryAddress'] ?? {},
-          );
+              Map<String, dynamic>.from(order['deliveryAddress'] ?? {});
 
           final String orderStatus =
-              order['orderStatus']?.toString() ??
-                  'Order Placed';
+              order['orderStatus']?.toString() ?? 'Order Placed';
 
           final String paymentMethod =
-              order['paymentMethod']?.toString() ??
-                  'Cash on Delivery';
+              order['paymentMethod']?.toString() ?? 'Cash on Delivery';
 
           final String paymentStatus =
-              order['paymentStatus']?.toString() ??
-                  'Pending';
+              order['paymentStatus']?.toString() ?? 'Pending';
 
-          final double totalAmount =
-          _toDouble(order['totalAmount']);
+          final double totalAmount = _toDouble(order['totalAmount']);
 
-          final int totalItems =
-          _toInt(order['totalItems']);
+          final int totalItems = _toInt(order['totalItems']);
 
-          final Timestamp? createdAt =
-          order['createdAt'] is Timestamp
+          final Timestamp? createdAt = order['createdAt'] is Timestamp
               ? order['createdAt'] as Timestamp
               : null;
 
@@ -101,11 +79,7 @@ class OrderDetailScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                // ------------------------------------------------
                 // ORDER STATUS
-                // ------------------------------------------------
-
                 _sectionTitle('Order Status'),
 
                 _statusCard(
@@ -116,57 +90,30 @@ class OrderDetailScreen extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // ------------------------------------------------
                 // PRODUCTS
-                // ------------------------------------------------
-
-                _sectionTitle(
-                  'Items ($totalItems)',
-                ),
-
+                _sectionTitle('Items ($totalItems)'),
                 ...items.map(
-                      (item) => _productCard(
-                    item: Map<String, dynamic>.from(item),
-                  ),
+                  (item) => _productCard(item: Map<String, dynamic>.from(item)),
                 ),
 
                 const SizedBox(height: 20),
 
-                // ------------------------------------------------
                 // DELIVERY ADDRESS
-                // ------------------------------------------------
-
                 _sectionTitle('Delivery Address'),
-
-                _addressCard(
-                  deliveryAddress,
-                ),
-
+                _addressCard(deliveryAddress),
                 const SizedBox(height: 20),
 
-                // ------------------------------------------------
                 // PAYMENT
-                // ------------------------------------------------
-
                 _sectionTitle('Payment'),
-
                 _paymentCard(
                   paymentMethod: paymentMethod,
                   paymentStatus: paymentStatus,
                 ),
-
                 const SizedBox(height: 20),
 
-                // ------------------------------------------------
                 // ORDER SUMMARY
-                // ------------------------------------------------
-
                 _sectionTitle('Order Summary'),
-
-                _summaryCard(
-                  totalItems: totalItems,
-                  totalAmount: totalAmount,
-                ),
+                _summaryCard(totalItems: totalItems, totalAmount: totalAmount),
 
                 const SizedBox(height: 30),
               ],
@@ -177,10 +124,7 @@ class OrderDetailScreen extends StatelessWidget {
     );
   }
 
-  // ============================================================
   // SECTION TITLE
-  // ============================================================
-
   Widget _sectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -195,10 +139,7 @@ class OrderDetailScreen extends StatelessWidget {
     );
   }
 
-  // ============================================================
   // STATUS CARD
-  // ============================================================
-
   Widget _statusCard({
     required String status,
     required String orderId,
@@ -220,7 +161,6 @@ class OrderDetailScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-
           Container(
             width: 58,
             height: 58,
@@ -275,24 +215,16 @@ class OrderDetailScreen extends StatelessWidget {
   // PRODUCT CARD
   // ============================================================
 
-  Widget _productCard({
-    required Map<String, dynamic> item,
-  }) {
-    final String productName =
-        item['productName']?.toString() ??
-            'Product';
+  Widget _productCard({required Map<String, dynamic> item}) {
+    final String productName = item['productName']?.toString() ?? 'Product';
 
-    final String image =
-        item['image']?.toString() ?? '';
+    final String image = item['image']?.toString() ?? '';
 
-    final double price =
-    _toDouble(item['price']);
+    final double price = _toDouble(item['price']);
 
-    final int quantity =
-    _toInt(item['quantity']);
+    final int quantity = _toInt(item['quantity']);
 
-    final double totalPrice =
-    _toDouble(item['totalPrice']);
+    final double totalPrice = _toDouble(item['totalPrice']);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -303,21 +235,19 @@ class OrderDetailScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-
           // Product image
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: image.isNotEmpty
                 ? Image.asset(
-              image,
-              width: 70,
-              height: 70,
-              fit: BoxFit.cover,
-              errorBuilder:
-                  (context, error, stackTrace) {
-                return _imagePlaceholder();
-              },
-            )
+                    image,
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return _imagePlaceholder();
+                    },
+                  )
                 : _imagePlaceholder(),
           ),
 
@@ -326,10 +256,8 @@ class OrderDetailScreen extends StatelessWidget {
           // Product information
           Expanded(
             child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   productName,
                   maxLines: 2,
@@ -393,26 +321,18 @@ class OrderDetailScreen extends StatelessWidget {
   // ADDRESS CARD
   // ============================================================
 
-  Widget _addressCard(
-      Map<String, dynamic> address,
-      ) {
-    final String name =
-        address['name']?.toString() ?? '';
+  Widget _addressCard(Map<String, dynamic> address) {
+    final String name = address['name']?.toString() ?? '';
 
-    final String phone =
-        address['phone']?.toString() ?? '';
+    final String phone = address['phone']?.toString() ?? '';
 
-    final String fullAddress =
-        address['address']?.toString() ?? '';
+    final String fullAddress = address['address']?.toString() ?? '';
 
-    final String city =
-        address['city']?.toString() ?? '';
+    final String city = address['city']?.toString() ?? '';
 
-    final String state =
-        address['state']?.toString() ?? '';
+    final String state = address['state']?.toString() ?? '';
 
-    final String pincode =
-        address['pincode']?.toString() ?? '';
+    final String pincode = address['pincode']?.toString() ?? '';
 
     return Container(
       width: double.infinity,
@@ -422,19 +342,14 @@ class OrderDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Row(
             children: [
-
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withValues(
-                    alpha: 0.15,
-                  ),
+                  color: Colors.amber.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -460,43 +375,25 @@ class OrderDetailScreen extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          _addressRow(
-            Icons.phone_outlined,
-            phone,
-          ),
+          _addressRow(Icons.phone_outlined, phone),
 
           const SizedBox(height: 8),
 
-          _addressRow(
-            Icons.home_outlined,
-            fullAddress,
-          ),
+          _addressRow(Icons.home_outlined, fullAddress),
 
           const SizedBox(height: 8),
 
-          _addressRow(
-            Icons.location_city_outlined,
-            '$city, $state - $pincode',
-          ),
+          _addressRow(Icons.location_city_outlined, '$city, $state - $pincode'),
         ],
       ),
     );
   }
 
-  Widget _addressRow(
-      IconData icon,
-      String text,
-      ) {
+  Widget _addressRow(IconData icon, String text) {
     return Row(
-      crossAxisAlignment:
-      CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
-        Icon(
-          icon,
-          size: 18,
-          color: Colors.grey.shade600,
-        ),
+        Icon(icon, size: 18, color: Colors.grey.shade600),
 
         const SizedBox(width: 10),
 
@@ -531,13 +428,10 @@ class OrderDetailScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-
           Container(
             padding: const EdgeInsets.all(11),
             decoration: BoxDecoration(
-              color: Colors.green.withValues(
-                alpha: 0.12,
-              ),
+              color: Colors.green.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -551,10 +445,8 @@ class OrderDetailScreen extends StatelessWidget {
 
           Expanded(
             child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   paymentMethod,
                   style: GoogleFonts.poppins(
@@ -576,11 +468,7 @@ class OrderDetailScreen extends StatelessWidget {
             ),
           ),
 
-          const Icon(
-            Icons.check_circle,
-            color: Colors.green,
-            size: 22,
-          ),
+          const Icon(Icons.check_circle, color: Colors.green, size: 22),
         ],
       ),
     );
@@ -590,10 +478,7 @@ class OrderDetailScreen extends StatelessWidget {
   // SUMMARY CARD
   // ============================================================
 
-  Widget _summaryCard({
-    required int totalItems,
-    required double totalAmount,
-  }) {
+  Widget _summaryCard({required int totalItems, required double totalAmount}) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -603,11 +488,7 @@ class OrderDetailScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-
-          _summaryRow(
-            'Total Items',
-            '$totalItems',
-          ),
+          _summaryRow('Total Items', '$totalItems'),
 
           const SizedBox(height: 10),
 
@@ -625,24 +506,15 @@ class OrderDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _summaryRow(
-      String title,
-      String value, {
-        bool isTotal = false,
-      }) {
+  Widget _summaryRow(String title, String value, {bool isTotal = false}) {
     return Row(
-      mainAxisAlignment:
-      MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-
         Text(
           title,
           style: GoogleFonts.poppins(
             fontSize: isTotal ? 16 : 13,
-            fontWeight:
-            isTotal
-                ? FontWeight.w600
-                : FontWeight.w400,
+            fontWeight: isTotal ? FontWeight.w600 : FontWeight.w400,
             color: Colors.black,
           ),
         ),
@@ -652,9 +524,7 @@ class OrderDetailScreen extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: isTotal ? 18 : 14,
             fontWeight: FontWeight.w600,
-            color: isTotal
-                ? Colors.amber.shade800
-                : Colors.black,
+            color: isTotal ? Colors.amber.shade800 : Colors.black,
           ),
         ),
       ],
@@ -670,10 +540,8 @@ class OrderDetailScreen extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(30),
         child: Column(
-          mainAxisAlignment:
-          MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
             Icon(
               Icons.receipt_long_outlined,
               size: 70,
@@ -710,23 +578,14 @@ class OrderDetailScreen extends StatelessWidget {
   // ERROR VIEW
   // ============================================================
 
-  Widget _errorView(
-      BuildContext context,
-      String error,
-      ) {
+  Widget _errorView(BuildContext context, String error) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(30),
         child: Column(
-          mainAxisAlignment:
-          MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            const Icon(
-              Icons.error_outline,
-              color: Colors.red,
-              size: 60,
-            ),
+            const Icon(Icons.error_outline, color: Colors.red, size: 60),
 
             const SizedBox(height: 15),
 
@@ -759,10 +618,7 @@ class OrderDetailScreen extends StatelessWidget {
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
               ),
-              child: Text(
-                'Go Back',
-                style: GoogleFonts.poppins(),
-              ),
+              child: Text('Go Back', style: GoogleFonts.poppins()),
             ),
           ],
         ),
@@ -779,10 +635,7 @@ class OrderDetailScreen extends StatelessWidget {
       return value.toDouble();
     }
 
-    return double.tryParse(
-      value?.toString() ?? '',
-    ) ??
-        0.0;
+    return double.tryParse(value?.toString() ?? '') ?? 0.0;
   }
 
   static int _toInt(dynamic value) {
@@ -794,10 +647,7 @@ class OrderDetailScreen extends StatelessWidget {
       return value.toInt();
     }
 
-    return int.tryParse(
-      value?.toString() ?? '',
-    ) ??
-        0;
+    return int.tryParse(value?.toString() ?? '') ?? 0;
   }
 
   static String _shortOrderId(String orderId) {
@@ -809,20 +659,15 @@ class OrderDetailScreen extends StatelessWidget {
   }
 
   static String _formatDate(DateTime date) {
-    final String day =
-    date.day.toString().padLeft(2, '0');
+    final String day = date.day.toString().padLeft(2, '0');
 
-    final String month =
-    date.month.toString().padLeft(2, '0');
+    final String month = date.month.toString().padLeft(2, '0');
 
-    final String year =
-    date.year.toString();
+    final String year = date.year.toString();
 
-    final String hour =
-    date.hour.toString().padLeft(2, '0');
+    final String hour = date.hour.toString().padLeft(2, '0');
 
-    final String minute =
-    date.minute.toString().padLeft(2, '0');
+    final String minute = date.minute.toString().padLeft(2, '0');
 
     return '$day/$month/$year • $hour:$minute';
   }
