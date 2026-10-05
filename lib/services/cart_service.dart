@@ -43,7 +43,6 @@ class CartService extends ChangeNotifier {
         ),
       );
     }
-
     notifyListeners();
   }
 
@@ -51,7 +50,6 @@ class CartService extends ChangeNotifier {
     final index = _items.indexWhere(
           (item) => item.product.text == productName,
     );
-
     if (index != -1) {
       _items[index].quantity++;
       notifyListeners();

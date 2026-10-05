@@ -297,7 +297,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 color: Colors.green.shade50,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-
                               child: Row(
                                 children: [
                                   Icon(
@@ -307,7 +306,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   ),
 
                                   const SizedBox(width: 5),
-
                                   Text(
                                     "In Stock",
                                     style: GoogleFonts.poppins(
@@ -323,7 +321,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
 
                         const SizedBox(height: 18),
-
                         // PRICE
                         Text(
                           "₹${product.price}",
@@ -335,17 +332,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
 
                         const SizedBox(height: 25),
-
                         // DESCRIPTION CARD
                         Container(
                           width: double.infinity,
-
                           padding: const EdgeInsets.all(18),
-
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(22),
-
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withValues(alpha: 0.04),
@@ -357,14 +350,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-
                             children: [
                               Row(
                                 children: [
                                   Container(
                                     width: 40,
                                     height: 40,
-
                                     decoration: BoxDecoration(
                                       color: Colors.amber.shade50,
                                       borderRadius: BorderRadius.circular(12),
@@ -610,7 +601,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               icon: Icons.shopping_cart_rounded,
                             );
                           },
-
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
                             foregroundColor: Colors.white,
