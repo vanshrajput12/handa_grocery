@@ -112,9 +112,7 @@ class OrderService {
         .snapshots();
   }
 
-  // ============================================================
   // GET SINGLE ORDER
-  // ============================================================
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getOrder(
       String orderId,

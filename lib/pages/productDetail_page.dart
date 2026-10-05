@@ -6,7 +6,6 @@ import '../services/wishlist_service.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final CardItemModel product;
-
   const ProductDetailScreen({super.key, required this.product});
 
   @override
@@ -15,10 +14,8 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final WishlistService _wishlistService = WishlistService();
-
   bool isWishlisted = false;
   bool isLoadingWishlist = true;
-
   int quantity = 1;
 
   @override
@@ -27,9 +24,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _checkWishlist();
   }
 
-  // ---------------------------------------------------------------------------
   // CHECK IF PRODUCT IS ALREADY IN WISHLIST
-  // ---------------------------------------------------------------------------
 
   Future<void> _checkWishlist() async {
     try {
@@ -50,9 +45,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
-  // ---------------------------------------------------------------------------
   // ADD / REMOVE WISHLIST
-  // ---------------------------------------------------------------------------
 
   Future<void> _toggleWishlist() async {
     try {
@@ -89,7 +82,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   void _showMessage(String message, {required IconData icon}) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -120,7 +112,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -259,9 +250,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                         const SizedBox(height: 8),
 
-                        // -----------------------------------------------------
                         // RATING + STOCK
-                        // -----------------------------------------------------
                         Row(
                           children: [
                             Container(
@@ -335,9 +324,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                         const SizedBox(height: 18),
 
-                        // -----------------------------------------------------
                         // PRICE
-                        // -----------------------------------------------------
                         Text(
                           "₹${product.price}",
                           style: GoogleFonts.poppins(
@@ -349,9 +336,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                         const SizedBox(height: 25),
 
-                        // =====================================================
                         // DESCRIPTION CARD
-                        // =====================================================
                         Container(
                           width: double.infinity,
 
@@ -421,9 +406,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                         const SizedBox(height: 22),
 
-                        // =====================================================
                         // QUANTITY
-                        // =====================================================
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
@@ -494,9 +477,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                         const SizedBox(height: 25),
 
-                        // =====================================================
                         // DELIVERY INFO
-                        // =====================================================
                         Container(
                           padding: const EdgeInsets.all(16),
 
@@ -561,9 +542,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
 
-            // =================================================================
             // BOTTOM ADD TO CART BAR
-            // =================================================================
             Positioned(
               left: 0,
               right: 0,
@@ -586,9 +565,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                 child: Row(
                   children: [
-                    // ---------------------------------------------------------
                     // TOTAL PRICE
-                    // ---------------------------------------------------------
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -597,7 +574,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       children: [
                         Text(
                           "Total",
-
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             color: Colors.grey.shade600,
@@ -617,9 +593,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                     const SizedBox(width: 18),
 
-                    // ---------------------------------------------------------
                     // ADD TO CART
-                    // ---------------------------------------------------------
                     Expanded(
                       child: SizedBox(
                         height: 55,

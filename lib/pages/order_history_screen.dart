@@ -4,8 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../services/order_service.dart';
 
-class OrderDetail extends StatelessWidget {
-  const OrderDetail({super.key});
+class OrderHistoryScreen extends StatelessWidget {
+  const OrderHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -653,7 +653,7 @@ class OrderDetail extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (_) => const OrderDetail()),
+                  MaterialPageRoute(builder: (_) => const OrderHistoryScreen()),
                 );
               },
 

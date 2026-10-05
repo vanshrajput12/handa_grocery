@@ -1,7 +1,7 @@
 import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:handa_grocery/pages/home_page.dart';
-import 'package:handa_grocery/pages/order_detail.dart';
+import 'package:handa_grocery/pages/order_history_screen.dart';
 import 'package:handa_grocery/pages/profile_page.dart';
 import 'package:handa_grocery/pages/wishlist_page.dart';
 
@@ -16,7 +16,7 @@ class _BottomNavState extends State<BottomNav> {
   int currentIndex = 0;
   final List<Widget> pages = [
     const HomePage(),
-    const OrderDetail(),
+    const OrderHistoryScreen(),
     WishlistPage(),
     const ProfilePage(),
   ];

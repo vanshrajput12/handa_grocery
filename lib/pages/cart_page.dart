@@ -19,7 +19,6 @@ class CartScreen extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: const Color(0xFFF8F8F8),
-
           appBar: AppBar(
             backgroundColor: Colors.amber,
             elevation: 0,
@@ -44,7 +43,6 @@ class CartScreen extends StatelessWidget {
                   itemCount: items.length,
                   itemBuilder: (context, index) {
                     final item = items[index];
-
                     return Container(
                       margin: const EdgeInsets.only(bottom: 14),
                       padding: const EdgeInsets.all(12),

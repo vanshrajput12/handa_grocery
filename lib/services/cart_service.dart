@@ -4,9 +4,7 @@ import 'package:handa_grocery/models/cart_item_model.dart';
 
 class CartService extends ChangeNotifier {
   static final CartService _instance = CartService._internal();
-
   factory CartService() => _instance;
-
   CartService._internal();
 
   final List<CartItemModel> _items = [];

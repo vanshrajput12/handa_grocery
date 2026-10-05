@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.amber,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
               "Handa Grocery",
               style: GoogleFonts.poppins(
                 fontSize: 18,
-                color: Colors.amber,
+                color: Colors.black,
                 fontWeight: FontWeight(700),
               ),
             ),
