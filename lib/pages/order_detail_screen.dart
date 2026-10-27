@@ -14,7 +14,7 @@ class OrderDetailScreen extends StatelessWidget {
     final OrderService orderService = OrderService();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
+      backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
         backgroundColor: Colors.amber,
         elevation: 0,

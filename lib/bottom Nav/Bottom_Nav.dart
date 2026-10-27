@@ -25,12 +25,12 @@ class _BottomNavState extends State<BottomNav> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      backgroundColor: Colors.teal.shade100,
       body: IndexedStack(index: currentIndex, children: pages),
       bottomNavigationBar: CrystalNavigationBar(
         currentIndex: currentIndex,
+        borderWidth: 1.5,
+        outlineBorderColor: Colors.white.withValues(alpha: 0.7),
         indicatorColor: Colors.white,
-        backgroundColor: Colors.black,
         unselectedItemColor: Colors.grey,
         onTap: (index) {
           setState(() {
@@ -40,19 +40,19 @@ class _BottomNavState extends State<BottomNav> {
         items: [
           CrystalNavigationBarItem(
             icon: Icons.home,
-            selectedColor: Colors.white,
+            selectedColor: Colors.black,
           ),
           CrystalNavigationBarItem(
             icon: Icons.shopping_cart,
-            selectedColor: Colors.white,
+            selectedColor: Colors.black,
           ),
           CrystalNavigationBarItem(
             icon: Icons.favorite,
-            selectedColor: Colors.white,
+            selectedColor: Colors.black,
           ),
           CrystalNavigationBarItem(
             icon: Icons.person,
-            selectedColor: Colors.white,
+            selectedColor: Colors.black,
           ),
         ],
       ),

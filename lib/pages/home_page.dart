@@ -19,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: Column(
@@ -70,7 +71,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade300,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [

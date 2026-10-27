@@ -161,7 +161,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final items = cartService.items;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
+      backgroundColor: Colors.grey.shade300,
 
       appBar: AppBar(
         backgroundColor: Colors.amber,
