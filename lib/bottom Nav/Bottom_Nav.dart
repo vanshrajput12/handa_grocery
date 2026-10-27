@@ -30,7 +30,7 @@ class _BottomNavState extends State<BottomNav> {
         currentIndex: currentIndex,
         borderWidth: 1.5,
         outlineBorderColor: Colors.white.withValues(alpha: 0.7),
-        indicatorColor: Colors.white,
+        indicatorColor: Colors.black,
         unselectedItemColor: Colors.grey,
         onTap: (index) {
           setState(() {
