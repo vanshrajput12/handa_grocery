@@ -18,6 +18,9 @@ class WishlistProductCardHelper extends StatefulWidget {
 class _WishlistProductCardHelperState extends State<WishlistProductCardHelper> {
   final WishlistService _wishlistService = WishlistService();
 
+  static const green = Color(0xFF248A52);
+  static const darkText = Color(0xFF25352A);
+
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
@@ -27,59 +30,49 @@ class _WishlistProductCardHelperState extends State<WishlistProductCardHelper> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) {
-              return ProductDetailScreen(product: product);
-            },
+            builder: (context) => ProductDetailScreen(product: product),
           ),
         );
       },
-
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: const Color(0xFFEDF3EE)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 15,
+              color: green.withValues(alpha: 0.07),
+              blurRadius: 16,
               offset: const Offset(0, 6),
             ),
           ],
         ),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ===============================================================
             // IMAGE SECTION
-            // ===============================================================
             Expanded(
               child: Stack(
                 children: [
                   Container(
                     width: double.infinity,
                     margin: const EdgeInsets.all(8),
-
                     decoration: BoxDecoration(
-                      color: Colors.amber.shade50,
+                      color: const Color(0xFFF6FAF4),
                       borderRadius: BorderRadius.circular(19),
                     ),
-
                     child: Padding(
                       padding: const EdgeInsets.all(13),
-
                       child: Hero(
                         tag: product.text,
-
                         child: Image.asset(
                           product.image,
                           fit: BoxFit.contain,
-
                           errorBuilder: (context, error, stackTrace) {
-                            return Icon(
+                            return const Icon(
                               Icons.image_not_supported_outlined,
                               size: 55,
-                              color: Colors.amber.shade300,
+                              color: Color(0xFFB6C8B9),
                             );
                           },
                         ),
@@ -87,33 +80,26 @@ class _WishlistProductCardHelperState extends State<WishlistProductCardHelper> {
                     ),
                   ),
 
-                  // =========================================================
                   // REMOVE FROM WISHLIST
-                  // =========================================================
                   Positioned(
                     top: 15,
                     right: 15,
-
                     child: Material(
                       color: Colors.white,
                       elevation: 3,
-                      shadowColor: Colors.black.withValues(alpha: 0.15),
+                      shadowColor: green.withValues(alpha: 0.2),
                       shape: const CircleBorder(),
-
                       child: InkWell(
                         customBorder: const CircleBorder(),
-
                         onTap: () async {
                           await _removeWishlist(context, product);
                         },
-
                         child: const SizedBox(
                           width: 40,
                           height: 40,
-
                           child: Icon(
                             Icons.favorite_rounded,
-                            color: Colors.red,
+                            color: Colors.redAccent,
                             size: 21,
                           ),
                         ),
@@ -124,64 +110,42 @@ class _WishlistProductCardHelperState extends State<WishlistProductCardHelper> {
               ),
             ),
 
-            // ===============================================================
             // PRODUCT INFORMATION
-            // ===============================================================
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 4, 14, 14),
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-
                 children: [
-                  // ---------------------------------------------------------
-                  // PRODUCT NAME
-                  // ---------------------------------------------------------
                   Text(
                     product.text,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFF111111),
+                      color: darkText,
                     ),
                   ),
-
                   const SizedBox(height: 6),
-
-                  // ---------------------------------------------------------
-                  // PRICE
-                  // ---------------------------------------------------------
                   Text(
                     "₹${product.price}",
-
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Colors.green,
+                      color: green,
                     ),
                   ),
-
                   const SizedBox(height: 7),
-
-                  // ---------------------------------------------------------
-                  // SAVED
-                  // ---------------------------------------------------------
                   Row(
                     children: [
-                      Icon(
-                        Icons.favorite_rounded,
+                      const Icon(
+                        Icons.bookmark_added_outlined,
                         size: 13,
-                        color: Colors.red.shade400,
+                        color: green,
                       ),
-
                       const SizedBox(width: 5),
-
                       Text(
                         "Saved",
-
                         style: GoogleFonts.poppins(
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
@@ -199,39 +163,29 @@ class _WishlistProductCardHelperState extends State<WishlistProductCardHelper> {
     );
   }
 
-  // =========================================================================
-  // REMOVE PRODUCT FROM WISHLIST
-  // =========================================================================
-
   Future<void> _removeWishlist(
-    BuildContext context,
-    CardItemModel product,
-  ) async {
+      BuildContext context,
+      CardItemModel product,
+      ) async {
     try {
       await _wishlistService.removeFromWishlist(product.text);
 
       if (!context.mounted) return;
 
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             "${product.text} removed from wishlist",
-
             style: GoogleFonts.poppins(
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
           ),
-
-          backgroundColor: Colors.black,
+          backgroundColor: green,
           behavior: SnackBarBehavior.floating,
-
           duration: const Duration(seconds: 2),
-
           margin: const EdgeInsets.all(15),
-
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -240,9 +194,17 @@ class _WishlistProductCardHelperState extends State<WishlistProductCardHelper> {
     } catch (e) {
       if (!context.mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Unable to remove item")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text("Unable to remove item"),
+          backgroundColor: green,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
+      );
     }
   }
 }
