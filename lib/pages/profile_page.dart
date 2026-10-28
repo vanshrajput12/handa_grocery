@@ -8,328 +8,299 @@ import '../auth/login/auth/auth_view.dart';
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
+  static const deepGreen = Color(0xFF14573A);
+  static const green = Color(0xFF248A52);
+  static const lightGreen = Color(0xFFEAF6ED);
+  static const darkText = Color(0xFF25352A);
+
   @override
   Widget build(BuildContext context) {
     final User? currentUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        backgroundColor: Colors.amber,
-        elevation: 0,
-        centerTitle: false,
-        title: Text(
-          "MY PROFILE",
-          style: GoogleFonts.poppins(
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        bottom: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-          child: Column(
-            children: [
-              // ================= PROFILE HEADER =================
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 15,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
+      backgroundColor: const Color(0xFFF7F9F6),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // ================= GREEN PROFILE HEADER =================
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [deepGreen, green],
                 ),
-
-                child: Column(
-                  children: [
-                    // ================= PROFILE IMAGE =================
-                    Container(
-                      height: 85,
-                      width: 85,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.amber.shade50,
-                        border: Border.all(
-                          color: Colors.amber.shade200,
-                          width: 3,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(36),
+                  bottomRight: Radius.circular(36),
+                ),
+              ),
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "My Profile",
+                          style: GoogleFonts.poppins(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
 
-                      child: Icon(
-                        Icons.person_rounded,
-                        size: 48,
-                        color: Colors.amber.shade700,
+                      const SizedBox(height: 18),
+
+                      // PROFILE IMAGE
+                      Container(
+                        height: 88,
+                        width: 88,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.45),
+                            width: 4,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.person_rounded,
+                          size: 48,
+                          color: green,
+                        ),
                       ),
-                    ),
 
-                    const SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                    // ================= NAME + EMAIL =================
-                    StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                      stream: currentUser == null
-                          ? null
-                          : FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(currentUser.uid)
-                          .snapshots(),
+                      // NAME + EMAIL
+                      StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                        stream: currentUser == null
+                            ? null
+                            : FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(currentUser.uid)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          String name = currentUser?.displayName ?? "User";
+                          String email = currentUser?.email ?? "No email";
 
-                      builder: (context, snapshot) {
-                        // Firebase Auth fallback
-                        String name =
-                            currentUser?.displayName ?? "User";
+                          if (snapshot.hasData && snapshot.data!.exists) {
+                            final data = snapshot.data!.data();
 
-                        String email =
-                            currentUser?.email ?? "No email";
+                            if (data != null) {
+                              final firestoreName = data['name']?.toString();
+                              final firestoreEmail = data['email']?.toString();
 
-                        // Get data from Firestore
-                        if (snapshot.hasData &&
-                            snapshot.data!.exists) {
-                          final data = snapshot.data!.data();
+                              if (firestoreName != null &&
+                                  firestoreName.isNotEmpty) {
+                                name = firestoreName;
+                              }
 
-                          if (data != null) {
-                            final firestoreName =
-                            data['name']?.toString();
-
-                            final firestoreEmail =
-                            data['email']?.toString();
-
-                            if (firestoreName != null &&
-                                firestoreName.isNotEmpty) {
-                              name = firestoreName;
-                            }
-
-                            if (firestoreEmail != null &&
-                                firestoreEmail.isNotEmpty) {
-                              email = firestoreEmail;
+                              if (firestoreEmail != null &&
+                                  firestoreEmail.isNotEmpty) {
+                                email = firestoreEmail;
+                              }
                             }
                           }
-                        }
 
-                        return Column(
-                          children: [
-                            // Name
-                            Text(
-                              name,
-                              textAlign: TextAlign.center,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.poppins(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
+                          return Column(
+                            children: [
+                              Text(
+                                name,
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-
-                            const SizedBox(height: 3),
-
-                            // Email
-                            Text(
-                              email,
-                              textAlign: TextAlign.center,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.poppins(
-                                fontSize: 13,
-                                color: Colors.grey.shade600,
+                              const SizedBox(height: 3),
+                              Text(
+                                email,
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  color: Colors.white70,
+                                ),
                               ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // ================= EDIT PROFILE =================
-                    SizedBox(
-                      height: 42,
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          // Edit profile
+                            ],
+                          );
                         },
+                      ),
 
-                        icon: const Icon(
-                          Icons.edit_outlined,
-                          size: 18,
-                        ),
+                      const SizedBox(height: 16),
 
-                        label: Text(
-                          "Edit Profile",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
+                      // EDIT PROFILE
+                      SizedBox(
+                        height: 42,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            // Edit profile
+                          },
+                          icon: const Icon(Icons.edit_outlined, size: 18),
+                          label: Text(
+                            "Edit Profile",
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
                           ),
-                        ),
-
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.amber.shade700,
-                          side: BorderSide(
-                            color: Colors.amber.shade300,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: green,
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(horizontal: 22),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(21),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+            ),
 
-              const SizedBox(height: 20),
+            // ================= SECTIONS =================
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 22, 20, 25),
+              child: Column(
+                children: [
+                  _sectionTitle("Account"),
+                  const SizedBox(height: 10),
 
-              // ================= ACCOUNT =================
-              _sectionTitle("Account"),
+                  ProfileCardHelper(
+                    icon: Icons.shopping_bag_outlined,
+                    title: "My Orders",
+                    subtitle: "View your recent orders",
+                    onTap: () {
+                      // My orders
+                    },
+                  ),
+                  ProfileCardHelper(
+                    icon: Icons.location_on_outlined,
+                    title: "Delivery Address",
+                    subtitle: "Manage your delivery addresses",
+                    onTap: () {
+                      // Address
+                    },
+                  ),
+                  ProfileCardHelper(
+                    icon: Icons.credit_card_outlined,
+                    title: "Payment Methods",
+                    subtitle: "Manage your payment options",
+                    onTap: () {},
+                  ),
 
-              const SizedBox(height: 10),
+                  const SizedBox(height: 20),
 
-              ProfileCardHelper(
-                icon: Icons.shopping_bag_outlined,
-                title: "My Orders",
-                subtitle: "View your recent orders",
-                onTap: () {
-                  // My orders
-                },
-              ),
+                  _sectionTitle("Preferences"),
+                  const SizedBox(height: 10),
 
-              ProfileCardHelper(
-                icon: Icons.location_on_outlined,
-                title: "Delivery Address",
-                subtitle: "Manage your delivery addresses",
-                onTap: () {
-                  // Address
-                },
-              ),
+                  ProfileCardHelper(
+                    icon: Icons.notifications_none_rounded,
+                    title: "Notifications",
+                    subtitle: "Manage notification settings",
+                    onTap: () {
+                      // Notifications
+                    },
+                  ),
+                  ProfileCardHelper(
+                    icon: Icons.language_rounded,
+                    title: "Language",
+                    subtitle: "English",
+                    onTap: () {
+                      // Language
+                    },
+                  ),
 
-              ProfileCardHelper(
-                icon: Icons.credit_card_outlined,
-                title: "Payment Methods",
-                subtitle: "Manage your payment options",
-                onTap: () {},
-              ),
+                  const SizedBox(height: 20),
 
-              const SizedBox(height: 20),
+                  _sectionTitle("Support"),
+                  const SizedBox(height: 10),
 
-              // ================= PREFERENCES =================
-              _sectionTitle("Preferences"),
+                  ProfileCardHelper(
+                    icon: Icons.help_outline_rounded,
+                    title: "Help & Support",
+                    subtitle: "Get help with your account",
+                    onTap: () {
+                      // Help
+                    },
+                  ),
 
-              const SizedBox(height: 10),
+                  const SizedBox(height: 20),
 
-              ProfileCardHelper(
-                icon: Icons.notifications_none_rounded,
-                title: "Notifications",
-                subtitle: "Manage notification settings",
-                onTap: () {
-                  // Notifications
-                },
-              ),
-
-              ProfileCardHelper(
-                icon: Icons.language_rounded,
-                title: "Language",
-                subtitle: "English",
-                onTap: () {
-                  // Language
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              // ================= SUPPORT =================
-              _sectionTitle("Support"),
-
-              const SizedBox(height: 10),
-
-              ProfileCardHelper(
-                icon: Icons.help_outline_rounded,
-                title: "Help & Support",
-                subtitle: "Get help with your account",
-                onTap: () {
-                  // Help
-                },
-              ),
-
-
-
-              const SizedBox(height: 20),
-
-              // ================= LOGOUT =================
-              Container(
-                width: double.infinity,
-
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-
-                child: ListTile(
-                  onTap: () {
-                    _showLogoutDialog(context);
-                  },
-
-                  leading: Container(
-                    height: 42,
-                    width: 42,
-
+                  // ================= LOGOUT =================
+                  Container(
+                    width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: const Color(0xFFEDF1ED)),
                     ),
-
-                    child: Icon(
-                      Icons.logout_rounded,
-                      color: Colors.red.shade600,
+                    child: ListTile(
+                      onTap: () => _showLogoutDialog(context),
+                      leading: Container(
+                        height: 42,
+                        width: 42,
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          Icons.logout_rounded,
+                          color: Colors.red.shade600,
+                        ),
+                      ),
+                      title: Text(
+                        "Logout",
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.red.shade600,
+                        ),
+                      ),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 15,
+                        color: Colors.grey.shade500,
+                      ),
                     ),
                   ),
 
-                  title: Text(
-                    "Logout",
+                  const SizedBox(height: 25),
+
+                  // ================= FOOTER =================
+                  Text(
+                    "Handa Grocery",
                     style: GoogleFonts.poppins(
-                      fontSize: 15,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: Colors.red.shade600,
+                      color: green,
                     ),
                   ),
-
-                  trailing: Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 15,
-                    color: Colors.grey.shade500,
+                  const SizedBox(height: 3),
+                  Text(
+                    "Online Shopping",
+                    style: GoogleFonts.poppins(
+                      fontSize: 11,
+                      color: Colors.grey.shade600,
+                    ),
                   ),
-                ),
+                ],
               ),
-
-              const SizedBox(height: 25),
-
-              // ================= FOOTER =================
-              Text(
-                "Handa Grocery",
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey.shade700,
-                ),
-              ),
-
-              const SizedBox(height: 3),
-
-              Text(
-                "Online Shopping",
-                style: GoogleFonts.poppins(
-                  fontSize: 11,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -344,7 +315,7 @@ class ProfilePage extends StatelessWidget {
         style: GoogleFonts.poppins(
           fontSize: 16,
           fontWeight: FontWeight.w700,
-          color: Colors.black87,
+          color: darkText,
         ),
       ),
     );
@@ -356,17 +327,18 @@ class ProfilePage extends StatelessWidget {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(22),
           ),
-
           title: Text(
             "Logout?",
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w700,
+              color: darkText,
             ),
           ),
-
           content: Text(
             "Are you sure you want to logout from Handa Grocery?",
             style: GoogleFonts.poppins(
@@ -374,17 +346,14 @@ class ProfilePage extends StatelessWidget {
               color: Colors.grey.shade700,
             ),
           ),
-
           actions: [
             // CANCEL
             TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-              },
+              onPressed: () => Navigator.pop(dialogContext),
               child: Text(
                 "Cancel",
                 style: GoogleFonts.poppins(
-                  color: Colors.grey.shade700,
+                  color: green,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -394,20 +363,15 @@ class ProfilePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  // Close dialog
                   Navigator.pop(dialogContext);
 
-                  // Sign out
                   await FirebaseAuth.instance.signOut();
 
                   if (!context.mounted) return;
 
-                  // Go to AuthPage
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const AuthPage(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const AuthPage()),
                         (route) => false,
                   );
                 } catch (e) {
@@ -415,27 +379,24 @@ class ProfilePage extends StatelessWidget {
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(
-                        "Logout failed: $e",
-                      ),
+                      content: Text("Logout failed: $e"),
+                      backgroundColor: green,
+                      behavior: SnackBarBehavior.floating,
                     ),
                   );
                 }
               },
-
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.shade600,
+                backgroundColor: green,
                 foregroundColor: Colors.white,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-
               child: Text(
                 "Logout",
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
               ),
             ),
           ],
