@@ -16,16 +16,7 @@ class OrderHistoryScreen extends StatelessWidget {
         backgroundColor: Colors.amber,
         elevation: 0,
         centerTitle: false,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.black,
-            size: 20,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+
 
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

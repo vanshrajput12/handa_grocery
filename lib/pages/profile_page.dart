@@ -28,8 +28,9 @@ class ProfilePage extends StatelessWidget {
         ),
       ),
       body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
           child: Column(
             children: [
               // ================= PROFILE HEADER =================

@@ -10,6 +10,9 @@ class HomePageCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const primaryGreen = Color(0xFF248A52);
+    const lightGreen = Color(0xFFE8F5EC);
+
     return InkWell(
       borderRadius: BorderRadius.circular(22),
       onTap: () {
@@ -20,24 +23,23 @@ class HomePageCardItem extends StatelessWidget {
           ),
         );
       },
-
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: const Color(0xFFEDF3EE), width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 12,
-              offset: const Offset(0, 5),
+              color: primaryGreen.withValues(alpha: 0.07),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ---------------- IMAGE ----------------
+            // Product Image
             Expanded(
               flex: 6,
               child: Padding(
@@ -46,18 +48,16 @@ class HomePageCardItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(17),
                   child: Container(
                     width: double.infinity,
-                    color: Colors.amber.shade50,
-
+                    color: const Color(0xFFF6FAF4),
                     child: Image.asset(
                       cardItemModel.image,
                       fit: BoxFit.cover,
-
                       errorBuilder: (context, error, stackTrace) {
                         return const Center(
                           child: Icon(
                             Icons.image_not_supported_outlined,
-                            size: 40,
-                            color: Colors.grey,
+                            size: 38,
+                            color: Color(0xFF9EADA0),
                           ),
                         );
                       },
@@ -67,7 +67,7 @@ class HomePageCardItem extends StatelessWidget {
               ),
             ),
 
-            // ---------------- PRODUCT INFO ----------------
+            // Product Information
             Expanded(
               flex: 4,
               child: Padding(
@@ -81,59 +81,64 @@ class HomePageCardItem extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                        color: const Color(0xFF25352A),
                       ),
                     ),
 
                     const SizedBox(height: 3),
 
-                    // Description
+                    // Product Description
                     Text(
                       cardItemModel.description,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
-                        fontSize: 11,
-                        color: Colors.grey.shade600,
+                        fontSize: 10,
+                        color: const Color(0xFF89958B),
                       ),
                     ),
 
                     const Spacer(),
 
-                    // Price + Add Button
+                    // Price and Add Button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Price
-                        Text(
-                          "₹${cardItemModel.price}",
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.green,
+                        Flexible(
+                          child: Text(
+                            '₹${cardItemModel.price}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: primaryGreen,
+                            ),
                           ),
                         ),
 
-                        // Add Button
-                        Container(
-                          height: 36,
-                          width: 36,
-                          decoration: BoxDecoration(
-                            color: Colors.black,
+                        const SizedBox(width: 6),
+
+                        // Green Add Button
+                        Material(
+                          color: lightGreen,
+                          borderRadius: BorderRadius.circular(12),
+                          child: InkWell(
                             borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
+                            onTap: () {
                               // Add to cart logic
                             },
-                            icon: const Icon(
-                              Icons.add_rounded,
-                              color: Colors.white,
-                              size: 21,
+                            child: const SizedBox(
+                              height: 36,
+                              width: 36,
+                              child: Icon(
+                                Icons.add_rounded,
+                                color: primaryGreen,
+                                size: 23,
+                              ),
                             ),
                           ),
                         ),

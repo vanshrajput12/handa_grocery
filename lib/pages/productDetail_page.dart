@@ -6,7 +6,11 @@ import '../services/wishlist_service.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final CardItemModel product;
-  const ProductDetailScreen({super.key, required this.product});
+
+  const ProductDetailScreen({
+    super.key,
+    required this.product,
+  });
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
@@ -14,6 +18,14 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final WishlistService _wishlistService = WishlistService();
+
+  static const green = Color(0xFF248A52);
+  static const deepGreen = Color(0xFF14573A);
+  static const lightGreen = Color(0xFFEAF6ED);
+  static const darkText = Color(0xFF25352A);
+  static const amberSoft = Color(0xFFFFF4D6);
+  static const amberText = Color(0xFF9A6B00);
+
   bool isWishlisted = false;
   bool isLoadingWishlist = true;
   int quantity = 1;
@@ -24,59 +36,45 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _checkWishlist();
   }
 
-  // CHECK IF PRODUCT IS ALREADY IN WISHLIST
-
   Future<void> _checkWishlist() async {
     try {
       final result = await _wishlistService.isWishlisted(widget.product.text);
-
       if (!mounted) return;
-
       setState(() {
         isWishlisted = result;
         isLoadingWishlist = false;
       });
-    } catch (e) {
+    } catch (_) {
       if (!mounted) return;
-
-      setState(() {
-        isLoadingWishlist = false;
-      });
+      setState(() => isLoadingWishlist = false);
     }
   }
 
-  // ADD / REMOVE WISHLIST
-
   Future<void> _toggleWishlist() async {
+    if (isLoadingWishlist) return;
+
     try {
       if (isWishlisted) {
-        // REMOVE FROM WISHLIST
         await _wishlistService.removeFromWishlist(widget.product.text);
-
-        if (!mounted) return;
-
-        setState(() {
-          isWishlisted = false;
-        });
-
-        _showMessage(
-          "Removed from wishlist",
-          icon: Icons.favorite_border_rounded,
-        );
       } else {
-        // ADD TO WISHLIST
         await _wishlistService.addToWishlist(widget.product);
-        if (!mounted) return;
-        setState(() {
-          isWishlisted = true;
-        });
-
-        _showMessage("Added to wishlist ❤️", icon: Icons.favorite_rounded);
       }
-    } catch (e) {
-      if (!mounted) return;
 
-      _showMessage("Something went wrong", icon: Icons.error_outline_rounded);
+      if (!mounted) return;
+      setState(() => isWishlisted = !isWishlisted);
+
+      _showMessage(
+        isWishlisted ? 'Added to your wishlist' : 'Removed from your wishlist',
+        icon: isWishlisted
+            ? Icons.favorite_rounded
+            : Icons.favorite_border_rounded,
+      );
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage(
+        'Could not update wishlist. Please try again.',
+        icon: Icons.error_outline_rounded,
+      );
     }
   }
 
@@ -89,435 +87,363 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             Icon(icon, color: Colors.white, size: 20),
             const SizedBox(width: 10),
             Expanded(
-              child: Text(
-                message,
-                style: GoogleFonts.poppins(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
+              child: Text(message, style: GoogleFonts.poppins(fontSize: 12)),
             ),
           ],
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: green,
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
         margin: const EdgeInsets.all(15),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
       ),
     );
+  }
+
+  double get _unitPrice {
+    return double.tryParse(
+      widget.product.price.replaceAll(RegExp(r'[^0-9.]'), ''),
+    ) ??
+        0;
+  }
+
+  String _formatPrice(double price) {
+    return price == price.roundToDouble()
+        ? price.toStringAsFixed(0)
+        : price.toStringAsFixed(2);
   }
 
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
+
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.keyboard_arrow_left_outlined, size: 30),
-        ),
-        backgroundColor: Colors.amber,
-        elevation: 0,
-        centerTitle: false,
-        title: Text(
-          "PRODUCT DETAIL",
-          style: GoogleFonts.poppins(
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
+      backgroundColor: const Color(0xFFF7F9F6),
+      body: Stack(
+        children: [
+          // GREEN CURVED HEADER BACKGROUND
+          Container(
+            height: 250,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [deepGreen, green],
+              ),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(36),
+                bottomRight: Radius.circular(36),
+              ),
+            ),
           ),
-        ),
-      ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 110),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 370,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(35),
-                        bottomRight: Radius.circular(35),
+
+          SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                // TOP BAR
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: Row(
+                    children: [
+                      _circleButton(
+                        icon: Icons.arrow_back_ios_new_rounded,
+                        iconSize: 18,
+                        iconColor: darkText,
+                        onTap: () => Navigator.pop(context),
                       ),
-                    ),
-                    child: Stack(
-                      children: [
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(35, 45, 35, 20),
-                            child: Hero(
-                              tag: product.text,
-                              child: Image.asset(
-                                product.image,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    width: 180,
-                                    height: 180,
-                                    decoration: BoxDecoration(
-                                      color: Colors.amber.shade50,
-                                      shape: BoxShape.circle,
-                                    ),
-
-                                    child: Icon(
-                                      Icons.image_not_supported_outlined,
-                                      size: 70,
-                                      color: Colors.amber.shade300,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
+                      Expanded(
+                        child: Text(
+                          'Product Details',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
                           ),
                         ),
-                        // fav icon
-                        Positioned(
-                          top: 15,
-                          right: 18,
-                          child: _circleButton(
-                            icon: isWishlisted
-                                ? Icons.favorite_rounded
-                                : Icons.favorite_border_rounded,
-                            iconColor: isWishlisted
-                                ? Colors.red
-                                : Colors.black87,
-                            onTap: isLoadingWishlist ? () {} : _toggleWishlist,
-                          ),
-                        ),
-                        // container bottom tag
-                        Positioned(
-                          left: 22,
-                          bottom: 20,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.amber.shade50,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.shopping_basket_outlined,
-                                  size: 16,
-                                  color: Colors.amber.shade700,
-                                ),
-
-                                const SizedBox(width: 6),
-
-                                Text(
-                                  "Fresh Grocery",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.amber.shade700,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                      _circleButton(
+                        icon: isWishlisted
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                        iconSize: 21,
+                        iconColor: isWishlisted ? Colors.redAccent : green,
+                        onTap: _toggleWishlist,
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                ),
+
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(bottom: 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          product.text,
-                          style: GoogleFonts.poppins(
-                            fontSize: 27,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF111111),
-                          ),
-                        ),
+                        _buildImageCard(product),
 
-                        const SizedBox(height: 8),
-
-                        // RATING + STOCK
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 6,
-                              ),
-
-                              decoration: BoxDecoration(
-                                color: Colors.amber.shade50,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.star_rounded,
-                                    color: Colors.amber,
-                                    size: 18,
-                                  ),
-
-                                  const SizedBox(width: 4),
-
-                                  Text(
-                                    "4.8",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(width: 10),
-
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 6,
-                              ),
-
-                              decoration: BoxDecoration(
-                                color: Colors.green.shade50,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.check_circle_rounded,
-                                    color: Colors.green.shade600,
-                                    size: 17,
-                                  ),
-
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    "In Stock",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.green.shade700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 18),
-                        // PRICE
-                        Text(
-                          "₹${product.price}",
-                          style: GoogleFonts.poppins(
-                            fontSize: 29,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.green,
-                          ),
-                        ),
-
-                        const SizedBox(height: 25),
-                        // DESCRIPTION CARD
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(18),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(22),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.04),
-                                blurRadius: 15,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                          ),
-
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                                product.text,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
+                                  color: darkText,
+                                  height: 1.3,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+
                               Row(
                                 children: [
                                   Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: Colors.amber.shade50,
-                                      borderRadius: BorderRadius.circular(12),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
                                     ),
-
-                                    child: Icon(
-                                      Icons.info_outline_rounded,
-                                      color: Colors.amber.shade700,
+                                    decoration: BoxDecoration(
+                                      color: lightGreen,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.check_circle_rounded,
+                                          color: green,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          'Available',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                            color: green,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-
-                                  const SizedBox(width: 12),
-
+                                  const SizedBox(width: 10),
+                                  Icon(
+                                    Icons.shopping_basket_outlined,
+                                    color: Colors.grey.shade500,
+                                    size: 17,
+                                  ),
+                                  const SizedBox(width: 5),
                                   Text(
-                                    "About this product",
-
+                                    'Daily essentials',
                                     style: GoogleFonts.poppins(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w700,
+                                      fontSize: 11,
+                                      color: Colors.grey.shade600,
                                     ),
                                   ),
                                 ],
                               ),
 
-                              const SizedBox(height: 14),
+                              const SizedBox(height: 18),
 
-                              Text(
-                                product.description,
+                              // PRICE
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    '₹${_formatPrice(_unitPrice)}',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 29,
+                                      fontWeight: FontWeight.w800,
+                                      color: green,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 7),
+                                    child: Text(
+                                      'per item',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
 
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  height: 1.7,
-                                  color: Colors.grey.shade700,
+                              const SizedBox(height: 22),
+
+                              _sectionCard(
+                                icon: Icons.info_outline_rounded,
+                                title: 'About this product',
+                                child: Text(
+                                  product.description.isNotEmpty
+                                      ? product.description
+                                      : 'A convenient grocery essential for '
+                                      'your everyday kitchen needs.',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    height: 1.8,
+                                    color: Colors.grey.shade700,
+                                  ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
 
-                        const SizedBox(height: 22),
+                              const SizedBox(height: 16),
 
-                        // QUANTITY
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                          children: [
-                            Text(
-                              "Quantity",
-
-                              style: GoogleFonts.poppins(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700,
+                              _sectionCard(
+                                icon: Icons.verified_user_outlined,
+                                title: 'Why shop with Handa Grocery?',
+                                child: Column(
+                                  children: [
+                                    _benefitRow(
+                                      Icons.shopping_bag_outlined,
+                                      'Everyday essentials',
+                                      'Find products for your daily needs.',
+                                    ),
+                                    const SizedBox(height: 16),
+                                    _benefitRow(
+                                      Icons.local_shipping_outlined,
+                                      'Convenient shopping',
+                                      'Order from home with ease.',
+                                    ),
+                                    const SizedBox(height: 16),
+                                    _benefitRow(
+                                      Icons.favorite_border_rounded,
+                                      'Save your favourites',
+                                      'Keep products handy in your wishlist.',
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
 
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
+                              const SizedBox(height: 22),
 
-                                border: Border.all(color: Colors.grey.shade200),
-                              ),
-
-                              child: Row(
+                              // QUANTITY
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // MINUS
-                                  _quantityButton(
-                                    icon: Icons.remove_rounded,
-
-                                    onTap: () {
-                                      if (quantity > 1) {
-                                        setState(() {
-                                          quantity--;
-                                        });
-                                      }
-                                    },
-                                  ),
-
-                                  // NUMBER
-                                  SizedBox(
-                                    width: 42,
-
-                                    child: Center(
-                                      child: Text(
-                                        "$quantity",
-
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Select Quantity',
                                         style: GoogleFonts.poppins(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w700,
+                                          color: darkText,
                                         ),
                                       ),
-                                    ),
+                                      const SizedBox(height: 3),
+                                      Text(
+                                        'Choose how many you need',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 11,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-
-                                  // PLUS
-                                  _quantityButton(
-                                    icon: Icons.add_rounded,
-
-                                    onTap: () {
-                                      setState(() {
-                                        quantity++;
-                                      });
-                                    },
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(14),
+                                      border: Border.all(
+                                        color: const Color(0xFFDDE9DE),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        _quantityButton(
+                                          icon: Icons.remove_rounded,
+                                          onTap: () {
+                                            if (quantity > 1) {
+                                              setState(() => quantity--);
+                                            }
+                                          },
+                                        ),
+                                        SizedBox(
+                                          width: 32,
+                                          child: Center(
+                                            child: Text(
+                                              '$quantity',
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w700,
+                                                color: darkText,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        _quantityButton(
+                                          icon: Icons.add_rounded,
+                                          onTap: () =>
+                                              setState(() => quantity++),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
 
-                        const SizedBox(height: 25),
+                              const SizedBox(height: 22),
 
-                        // DELIVERY INFO
-                        Container(
-                          padding: const EdgeInsets.all(16),
-
-                          decoration: BoxDecoration(
-                            color: Colors.amber.shade50,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-
-                          child: Row(
-                            children: [
+                              // DELIVERY INFO
                               Container(
-                                width: 45,
-                                height: 45,
-
+                                padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(14),
+                                  color: lightGreen,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: const Color(0xFFD7EBDD),
+                                  ),
                                 ),
-
-                                child: Icon(
-                                  Icons.local_shipping_outlined,
-                                  color: Colors.amber.shade700,
-                                ),
-                              ),
-
-                              const SizedBox(width: 12),
-
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-
+                                child: Row(
                                   children: [
-                                    Text(
-                                      "Fast Delivery",
-
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
+                                    Container(
+                                      height: 46,
+                                      width: 46,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                      child: const Icon(
+                                        Icons.local_shipping_outlined,
+                                        color: green,
+                                        size: 24,
                                       ),
                                     ),
-
-                                    const SizedBox(height: 2),
-
-                                    Text(
-                                      "Get your groceries delivered quickly",
-
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 11,
-                                        color: Colors.grey.shade700,
+                                    const SizedBox(width: 13),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Delivery to your doorstep',
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w700,
+                                              color: darkText,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Delivery availability and timing '
+                                                'depend on your location.',
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 11,
+                                              height: 1.5,
+                                              color: Colors.grey.shade700,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -529,180 +455,331 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-
-            // BOTTOM ADD TO CART BAR
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-
-                decoration: BoxDecoration(
-                  color: Colors.white,
-
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.10),
-                      blurRadius: 20,
-                      offset: const Offset(0, -5),
-                    ),
-                  ],
                 ),
+              ],
+            ),
+          ),
+        ],
+      ),
 
-                child: Row(
+      // FIXED BOTTOM CART BAR
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: const Border(top: BorderSide(color: Color(0xFFEDF1ED))),
+          boxShadow: [
+            BoxShadow(
+              color: green.withValues(alpha: 0.06),
+              blurRadius: 18,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          top: false,
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // TOTAL PRICE
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-
-                      mainAxisSize: MainAxisSize.min,
-
-                      children: [
-                        Text(
-                          "Total",
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-
-                        Text(
-                          "₹${_totalPrice(product.price)}",
-
-                          style: GoogleFonts.poppins(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      'TOTAL PRICE',
+                      style: GoogleFonts.poppins(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade600,
+                        letterSpacing: 0.8,
+                      ),
                     ),
-
-                    const SizedBox(width: 18),
-
-                    // ADD TO CART
-                    Expanded(
-                      child: SizedBox(
-                        height: 55,
-
-                        child: ElevatedButton(
-                          onPressed: () {
-                            CartService().addToCart(
-                              product,
-                              quantity: quantity,
-                            );
-
-                            _showMessage(
-                              "${product.text} added to cart",
-                              icon: Icons.shopping_cart_rounded,
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
-                            ),
-                          ),
-
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-
-                            children: [
-                              const Icon(
-                                Icons.shopping_cart_outlined,
-                                size: 20,
-                              ),
-
-                              const SizedBox(width: 9),
-
-                              Text(
-                                "Add to Cart",
-
-                                style: GoogleFonts.poppins(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '₹${_formatPrice(_unitPrice * quantity)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: green,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+              const SizedBox(width: 14),
+              Expanded(
+                flex: 3,
+                child: SizedBox(
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_unitPrice <= 0) {
+                        _showMessage(
+                          'This product has an invalid price.',
+                          icon: Icons.error_outline_rounded,
+                        );
+                        return;
+                      }
+
+                      CartService().addToCart(product, quantity: quantity);
+
+                      _showMessage(
+                        '${product.text} added to cart',
+                        icon: Icons.shopping_cart_rounded,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: green,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.shopping_cart_outlined, size: 19),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            'Add to Cart',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // ===========================================================================
-  // CIRCLE BUTTON
-  // ===========================================================================
+  // IMAGE CARD (floats over the green header)
+  Widget _buildImageCard(CardItemModel product) {
+    return Container(
+      height: 300,
+      width: double.infinity,
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: deepGreen.withValues(alpha: 0.14),
+            blurRadius: 24,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: amberSoft,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.eco_outlined, size: 16, color: amberText),
+                    const SizedBox(width: 5),
+                    Text(
+                      'Fresh Grocery',
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: amberText,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              Icon(
+                Icons.verified_outlined,
+                color: green.withValues(alpha: 0.8),
+                size: 21,
+              ),
+            ],
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Hero(
+                tag: product.text,
+                child: Image.asset(
+                  product.image,
+                  width: double.infinity,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Center(
+                      child: Icon(
+                        Icons.image_not_supported_outlined,
+                        size: 65,
+                        color: Color(0xFFB6C8B9),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.check_circle_rounded, color: green, size: 16),
+              const SizedBox(width: 6),
+              Text(
+                'A fresh choice for your daily needs',
+                style: GoogleFonts.poppins(
+                  fontSize: 11,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _circleButton({
     required IconData icon,
     required VoidCallback onTap,
-    Color iconColor = Colors.black87,
+    required Color iconColor,
+    double iconSize = 20,
   }) {
     return Material(
       color: Colors.white,
-      elevation: 4,
-      shadowColor: Colors.black.withValues(alpha: 0.12),
       shape: const CircleBorder(),
-
       child: InkWell(
-        onTap: onTap,
         customBorder: const CircleBorder(),
-
+        onTap: onTap,
         child: SizedBox(
-          width: 45,
-          height: 45,
-
-          child: Icon(icon, size: 20, color: iconColor),
+          height: 44,
+          width: 44,
+          child: Icon(icon, size: iconSize, color: iconColor),
         ),
       ),
     );
   }
 
-  // ===========================================================================
-  // QUANTITY BUTTON
-  // ===========================================================================
+  Widget _sectionCard({
+    required IconData icon,
+    required String title,
+    required Widget child,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(17),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(21),
+        border: Border.all(color: const Color(0xFFEDF1ED)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: lightGreen,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: green, size: 21),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: darkText,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _benefitRow(IconData icon, String title, String description) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: green, size: 21),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: darkText,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                description,
+                style: GoogleFonts.poppins(
+                  fontSize: 11,
+                  height: 1.5,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _quantityButton({
     required IconData icon,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(15),
-
-      child: SizedBox(
-        width: 42,
-        height: 42,
-
-        child: Icon(icon, size: 19, color: Colors.amber.shade700),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(13),
+        child: SizedBox(
+          height: 40,
+          width: 38,
+          child: Icon(icon, size: 19, color: green),
+        ),
       ),
     );
-  }
-
-  // ===========================================================================
-  // TOTAL PRICE
-  // ===========================================================================
-
-  double _totalPrice(String price) {
-    final parsedPrice =
-        double.tryParse(price.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0;
-
-    return parsedPrice * quantity;
   }
 }
