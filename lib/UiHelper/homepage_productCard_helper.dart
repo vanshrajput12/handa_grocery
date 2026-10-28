@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handa_grocery/pages/productDetail_page.dart';
 import '../models/CardItem_model.dart';
+import '../services/cart_service.dart';
 
 class HomePageCardItem extends StatelessWidget {
   final CardItemModel cardItemModel;
@@ -11,7 +12,6 @@ class HomePageCardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const primaryGreen = Color(0xFF248A52);
-    const lightGreen = Color(0xFFE8F5EC);
 
     return InkWell(
       borderRadius: BorderRadius.circular(22),
@@ -49,9 +49,10 @@ class HomePageCardItem extends StatelessWidget {
                   child: Container(
                     width: double.infinity,
                     color: const Color(0xFFF6FAF4),
+                    padding: const EdgeInsets.all(6),
                     child: Image.asset(
                       cardItemModel.image,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) {
                         return const Center(
                           child: Icon(
@@ -75,7 +76,6 @@ class HomePageCardItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Product Name
                     Text(
                       cardItemModel.text,
                       maxLines: 1,
@@ -86,10 +86,7 @@ class HomePageCardItem extends StatelessWidget {
                         color: const Color(0xFF25352A),
                       ),
                     ),
-
-                    const SizedBox(height: 3),
-
-                    // Product Description
+                    const SizedBox(height: 2),
                     Text(
                       cardItemModel.description,
                       maxLines: 1,
@@ -99,10 +96,7 @@ class HomePageCardItem extends StatelessWidget {
                         color: const Color(0xFF89958B),
                       ),
                     ),
-
                     const Spacer(),
-
-                    // Price and Add Button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -119,24 +113,43 @@ class HomePageCardItem extends StatelessWidget {
                             ),
                           ),
                         ),
-
                         const SizedBox(width: 6),
 
-                        // Green Add Button
+                        // Filled green add button
                         Material(
-                          color: lightGreen,
+                          color: primaryGreen,
                           borderRadius: BorderRadius.circular(12),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(12),
                             onTap: () {
-                              // Add to cart logic
+                              CartService().addToCart(
+                                cardItemModel,
+                                quantity: 1,
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    '${cardItemModel.text} added to cart',
+                                    style: GoogleFonts.poppins(fontSize: 12),
+                                  ),
+                                  backgroundColor: primaryGreen,
+                                  behavior: SnackBarBehavior.floating,
+                                  margin: const EdgeInsets.all(15),
+                                  duration: const Duration(seconds: 1),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                ),
+                              );
                             },
                             child: const SizedBox(
                               height: 36,
                               width: 36,
                               child: Icon(
                                 Icons.add_rounded,
-                                color: primaryGreen,
+                                color: Colors.white,
                                 size: 23,
                               ),
                             ),
