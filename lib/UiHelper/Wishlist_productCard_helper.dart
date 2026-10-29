@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handa_grocery/services/wishlist_service.dart';
 
+import '../Widgets.dart';
 import '../models/CardItem_model.dart';
 import '../pages/productDetail_page.dart';
 
@@ -65,17 +66,7 @@ class _WishlistProductCardHelperState extends State<WishlistProductCardHelper> {
                       padding: const EdgeInsets.all(13),
                       child: Hero(
                         tag: product.text,
-                        child: Image.asset(
-                          product.image,
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(
-                              Icons.image_not_supported_outlined,
-                              size: 55,
-                              color: Color(0xFFB6C8B9),
-                            );
-                          },
-                        ),
+                        child: ProductImage(path: product.image, fit: BoxFit.cover),
                       ),
                     ),
                   ),

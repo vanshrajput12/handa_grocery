@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../Widgets.dart';
 import '../services/cart_service.dart';
 import 'checkout_page.dart';
 
@@ -209,16 +210,7 @@ class CartScreen extends StatelessWidget {
                   ),
                   borderRadius: BorderRadius.circular(18),
                 ),
-                child: Image.asset(
-                  item.product.image,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) {
-                    return const Icon(
-                      Icons.image_not_supported_outlined,
-                      color: Color(0xFFB6C8B9),
-                    );
-                  },
-                ),
+                child: ProductImage(path: item.product.image, fit: BoxFit.cover),
               ),
 
               const SizedBox(width: 12),

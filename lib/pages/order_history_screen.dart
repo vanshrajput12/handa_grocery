@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../Widgets.dart';
 import '../services/order_service.dart';
 
 class OrderHistoryScreen extends StatelessWidget {
@@ -376,16 +377,7 @@ class OrderHistoryScreen extends StatelessWidget {
               Icons.image_not_supported_outlined,
               color: Colors.grey.shade400,
             )
-                : Image.asset(
-              image,
-              fit: BoxFit.contain,
-              errorBuilder: (_, _, _) {
-                return Icon(
-                  Icons.image_not_supported_outlined,
-                  color: Colors.grey.shade400,
-                );
-              },
-            ),
+                : ProductImage(path:image, fit: BoxFit.cover),
           ),
           const SizedBox(width: 12),
           Expanded(

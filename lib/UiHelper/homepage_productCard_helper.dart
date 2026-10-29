@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handa_grocery/pages/productDetail_page.dart';
+import '../Widgets.dart';
 import '../models/CardItem_model.dart';
 import '../services/cart_service.dart';
 
@@ -50,19 +51,9 @@ class HomePageCardItem extends StatelessWidget {
                     width: double.infinity,
                     color: const Color(0xFFF6FAF4),
                     padding: const EdgeInsets.all(6),
-                    child: Image.asset(
-                      cardItemModel.image,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Center(
-                          child: Icon(
-                            Icons.image_not_supported_outlined,
-                            size: 38,
-                            color: Color(0xFF9EADA0),
-                          ),
-                        );
-                      },
-                    ),
+                    child: ProductImage(path: cardItemModel.image, fit: BoxFit.cover),
+
+
                   ),
                 ),
               ),

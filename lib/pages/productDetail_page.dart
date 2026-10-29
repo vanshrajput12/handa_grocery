@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handa_grocery/models/CardItem_model.dart';
+import '../Widgets.dart';
 import '../services/cart_service.dart';
 import '../services/wishlist_service.dart';
 
@@ -627,20 +628,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               padding: const EdgeInsets.all(10),
               child: Hero(
                 tag: product.text,
-                child: Image.asset(
-                  product.image,
-                  width: double.infinity,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Center(
-                      child: Icon(
-                        Icons.image_not_supported_outlined,
-                        size: 65,
-                        color: Color(0xFFB6C8B9),
-                      ),
-                    );
-                  },
-                ),
+                child: ProductImage(path: product.image, fit: BoxFit.cover),
               ),
             ),
           ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../UiHelper/checkoutpage_textfield_helper.dart';
+import '../Widgets.dart';
 import '../services/cart_service.dart';
 import '../services/order_service.dart';
 import 'order_success.dart';
@@ -448,16 +449,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       ),
                                       borderRadius: BorderRadius.circular(14),
                                     ),
-                                    child: Image.asset(
-                                      item.product.image,
-                                      fit: BoxFit.contain,
-                                      errorBuilder: (_, __, ___) {
-                                        return const Icon(
-                                          Icons.image_not_supported_outlined,
-                                          color: Color(0xFFB6C8B9),
-                                        );
-                                      },
-                                    ),
+                                    child: ProductImage(path: item.product.image, fit: BoxFit.cover),
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(
