@@ -23,6 +23,9 @@ class CheckOutpageTextFieldHelper extends StatelessWidget {
     this.maxLength,
   });
 
+  static const green = Color(0xFF248A52);
+  static const darkText = Color(0xFF25352A);
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -31,27 +34,40 @@ class CheckOutpageTextFieldHelper extends StatelessWidget {
       maxLines: maxLines,
       maxLength: maxLength,
       validator: validator,
+      cursorColor: green,
 
       style: GoogleFonts.poppins(
         fontSize: 13,
         fontWeight: FontWeight.w500,
+        color: darkText,
       ),
 
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
 
+        labelStyle: GoogleFonts.poppins(
+          fontSize: 13,
+          color: Colors.grey.shade600,
+        ),
+        floatingLabelStyle: GoogleFonts.poppins(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: green,
+        ),
+        hintStyle: GoogleFonts.poppins(
+          fontSize: 12,
+          color: Colors.grey.shade400,
+        ),
+        errorStyle: GoogleFonts.poppins(fontSize: 11),
+
         // Hide character counter when maxLength is used
         counterText: "",
 
-        prefixIcon: Icon(
-          icon,
-          size: 20,
-          color: Colors.grey.shade600,
-        ),
+        prefixIcon: Icon(icon, size: 20, color: green),
 
         filled: true,
-        fillColor: Colors.grey.shade50,
+        fillColor: const Color(0xFFF6FAF4),
 
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 15,
@@ -59,38 +75,28 @@ class CheckOutpageTextFieldHelper extends StatelessWidget {
         ),
 
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide.none,
         ),
 
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
-            color: Colors.grey.shade200,
-          ),
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Color(0xFFE3EEE5)),
         ),
 
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
-            color: Colors.amber.shade700,
-            width: 1.5,
-          ),
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: green, width: 1.6),
         ),
 
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: Colors.red,
-          ),
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.red.shade300),
         ),
 
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: Colors.red,
-            width: 1.5,
-          ),
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.red.shade400, width: 1.5),
         ),
       ),
     );

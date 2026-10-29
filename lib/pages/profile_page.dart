@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:handa_grocery/UiHelper/profileCard_helper.dart';
+import 'package:handa_grocery/models/CardItem_model.dart';
+import 'package:handa_grocery/services/order_service.dart';
+import 'package:handa_grocery/services/wishlist_service.dart';
 import '../auth/login/auth/auth_view.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -12,6 +14,7 @@ class ProfilePage extends StatelessWidget {
   static const green = Color(0xFF248A52);
   static const lightGreen = Color(0xFFEAF6ED);
   static const darkText = Color(0xFF25352A);
+  static const amber = Color(0xFFFFB300);
 
   @override
   Widget build(BuildContext context) {
@@ -22,234 +25,319 @@ class ProfilePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // ================= GREEN PROFILE HEADER =================
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [deepGreen, green],
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(36),
-                  bottomRight: Radius.circular(36),
-                ),
-              ),
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "My Profile",
-                          style: GoogleFonts.poppins(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
+            // ================= HEADER + FLOATING STATS =================
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(36),
+                    bottomRight: Radius.circular(36),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [deepGreen, green],
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: -45,
+                          right: -35,
+                          child: _decorCircle(150),
+                        ),
+                        Positioned(
+                          bottom: -55,
+                          left: -45,
+                          child: _decorCircle(130),
+                        ),
+                        SafeArea(
+                          bottom: false,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 14, 20, 56),
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "My Profile",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 18),
+
+                                // AVATAR WITH EDIT BADGE
+                                SizedBox(
+                                  height: 96,
+                                  width: 96,
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        height: 92,
+                                        width: 92,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white,
+                                          border: Border.all(
+                                            color: Colors.white
+                                                .withValues(alpha: 0.45),
+                                            width: 4,
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.person_rounded,
+                                          size: 50,
+                                          color: green,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: Container(
+                                          height: 30,
+                                          width: 30,
+                                          decoration: BoxDecoration(
+                                            color: amber,
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.white,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          child: const Icon(
+                                            Icons.camera_alt_rounded,
+                                            size: 15,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                const SizedBox(height: 12),
+
+                                // NAME + EMAIL
+                                StreamBuilder<
+                                    DocumentSnapshot<Map<String, dynamic>>>(
+                                  stream: currentUser == null
+                                      ? null
+                                      : FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(currentUser.uid)
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    String name =
+                                        currentUser?.displayName ?? "User";
+                                    String email =
+                                        currentUser?.email ?? "No email";
+
+                                    if (snapshot.hasData &&
+                                        snapshot.data!.exists) {
+                                      final data = snapshot.data!.data();
+
+                                      if (data != null) {
+                                        final firestoreName =
+                                        data['name']?.toString();
+                                        final firestoreEmail =
+                                        data['email']?.toString();
+
+                                        if (firestoreName != null &&
+                                            firestoreName.isNotEmpty) {
+                                          name = firestoreName;
+                                        }
+
+                                        if (firestoreEmail != null &&
+                                            firestoreEmail.isNotEmpty) {
+                                          email = firestoreEmail;
+                                        }
+                                      }
+                                    }
+
+                                    return Column(
+                                      children: [
+                                        Text(
+                                          name,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 3),
+                                        Text(
+                                          email,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 13,
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+
+                                const SizedBox(height: 14),
+
+                                // EDIT PROFILE
+                                SizedBox(
+                                  height: 40,
+                                  child: OutlinedButton.icon(
+                                    onPressed: () {
+                                      // Edit profile
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit_outlined,
+                                      size: 17,
+                                    ),
+                                    label: Text(
+                                      "Edit Profile",
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor:
+                                      Colors.white.withValues(alpha: 0.14),
+                                      side: BorderSide(
+                                        color:
+                                        Colors.white.withValues(alpha: 0.6),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
+                      ],
+                    ),
+                  ),
+                ),
 
-                      const SizedBox(height: 18),
+                // FLOATING STATS CARD
+                Positioned(
+                  left: 20,
+                  right: 20,
+                  bottom: -38,
+                  child: _statsCard(),
+                ),
+              ],
+            ),
 
-                      // PROFILE IMAGE
-                      Container(
-                        height: 88,
-                        width: 88,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.45),
-                            width: 4,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.person_rounded,
-                          size: 48,
-                          color: green,
-                        ),
-                      ),
+            const SizedBox(height: 62),
 
-                      const SizedBox(height: 12),
-
-                      // NAME + EMAIL
-                      StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                        stream: currentUser == null
-                            ? null
-                            : FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(currentUser.uid)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          String name = currentUser?.displayName ?? "User";
-                          String email = currentUser?.email ?? "No email";
-
-                          if (snapshot.hasData && snapshot.data!.exists) {
-                            final data = snapshot.data!.data();
-
-                            if (data != null) {
-                              final firestoreName = data['name']?.toString();
-                              final firestoreEmail = data['email']?.toString();
-
-                              if (firestoreName != null &&
-                                  firestoreName.isNotEmpty) {
-                                name = firestoreName;
-                              }
-
-                              if (firestoreEmail != null &&
-                                  firestoreEmail.isNotEmpty) {
-                                email = firestoreEmail;
-                              }
-                            }
-                          }
-
-                          return Column(
-                            children: [
-                              Text(
-                                name,
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 3),
-                              Text(
-                                email,
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 13,
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          );
+            // ================= MENU =================
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+              child: Column(
+                children: [
+                  _menuGroup(
+                    title: "Account",
+                    tiles: [
+                      _menuTile(
+                        icon: Icons.shopping_bag_outlined,
+                        title: "My Orders",
+                        subtitle: "View your recent orders",
+                        onTap: () {
+                          // My orders
                         },
                       ),
-
-                      const SizedBox(height: 16),
-
-                      // EDIT PROFILE
-                      SizedBox(
-                        height: 42,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            // Edit profile
-                          },
-                          icon: const Icon(Icons.edit_outlined, size: 18),
-                          label: Text(
-                            "Edit Profile",
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: green,
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(horizontal: 22),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(21),
-                            ),
-                          ),
-                        ),
+                      _menuTile(
+                        icon: Icons.location_on_outlined,
+                        title: "Delivery Address",
+                        subtitle: "Manage your delivery addresses",
+                        onTap: () {
+                          // Address
+                        },
+                      ),
+                      _menuTile(
+                        icon: Icons.credit_card_outlined,
+                        title: "Payment Methods",
+                        subtitle: "Manage your payment options",
+                        onTap: () {},
                       ),
                     ],
                   ),
-                ),
-              ),
-            ),
 
-            // ================= SECTIONS =================
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 22, 20, 25),
-              child: Column(
-                children: [
-                  _sectionTitle("Account"),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 22),
 
-                  ProfileCardHelper(
-                    icon: Icons.shopping_bag_outlined,
-                    title: "My Orders",
-                    subtitle: "View your recent orders",
-                    onTap: () {
-                      // My orders
-                    },
-                  ),
-                  ProfileCardHelper(
-                    icon: Icons.location_on_outlined,
-                    title: "Delivery Address",
-                    subtitle: "Manage your delivery addresses",
-                    onTap: () {
-                      // Address
-                    },
-                  ),
-                  ProfileCardHelper(
-                    icon: Icons.credit_card_outlined,
-                    title: "Payment Methods",
-                    subtitle: "Manage your payment options",
-                    onTap: () {},
+                  _menuGroup(
+                    title: "Preferences",
+                    tiles: [
+                      _menuTile(
+                        icon: Icons.notifications_none_rounded,
+                        title: "Notifications",
+                        subtitle: "Manage notification settings",
+                        onTap: () {
+                          // Notifications
+                        },
+                      ),
+                      _menuTile(
+                        icon: Icons.language_rounded,
+                        title: "Language",
+                        subtitle: "App language",
+                        trailingText: "English",
+                        onTap: () {
+                          // Language
+                        },
+                      ),
+                    ],
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 22),
 
-                  _sectionTitle("Preferences"),
-                  const SizedBox(height: 10),
-
-                  ProfileCardHelper(
-                    icon: Icons.notifications_none_rounded,
-                    title: "Notifications",
-                    subtitle: "Manage notification settings",
-                    onTap: () {
-                      // Notifications
-                    },
-                  ),
-                  ProfileCardHelper(
-                    icon: Icons.language_rounded,
-                    title: "Language",
-                    subtitle: "English",
-                    onTap: () {
-                      // Language
-                    },
+                  _menuGroup(
+                    title: "Support",
+                    tiles: [
+                      _menuTile(
+                        icon: Icons.help_outline_rounded,
+                        title: "Help & Support",
+                        subtitle: "Get help with your account",
+                        onTap: () {
+                          // Help
+                        },
+                      ),
+                    ],
                   ),
 
-                  const SizedBox(height: 20),
-
-                  _sectionTitle("Support"),
-                  const SizedBox(height: 10),
-
-                  ProfileCardHelper(
-                    icon: Icons.help_outline_rounded,
-                    title: "Help & Support",
-                    subtitle: "Get help with your account",
-                    onTap: () {
-                      // Help
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 22),
 
                   // ================= LOGOUT =================
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: const Color(0xFFEDF1ED)),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFFF3DCDC)),
                     ),
                     child: ListTile(
                       onTap: () => _showLogoutDialog(context),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       leading: Container(
                         height: 42,
                         width: 42,
@@ -278,23 +366,32 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 28),
 
                   // ================= FOOTER =================
-                  Text(
-                    "Handa Grocery",
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: green,
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
                     ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    "Online Shopping",
-                    style: GoogleFonts.poppins(
-                      fontSize: 11,
-                      color: Colors.grey.shade600,
+                    decoration: BoxDecoration(
+                      color: lightGreen,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.eco_outlined, size: 15, color: green),
+                        const SizedBox(width: 6),
+                        Text(
+                          "Handa Grocery • Online Shopping",
+                          style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: green,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -306,16 +403,228 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  // ================= SECTION TITLE =================
-  Widget _sectionTitle(String title) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        title,
-        style: GoogleFonts.poppins(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-          color: darkText,
+  // ================= DECORATIVE CIRCLE =================
+  Widget _decorCircle(double size) {
+    return Container(
+      height: size,
+      width: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white.withValues(alpha: 0.07),
+      ),
+    );
+  }
+
+  // ================= STATS CARD =================
+  Widget _statsCard() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: deepGreen.withValues(alpha: 0.16),
+            blurRadius: 22,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: OrderService().getUserOrders(),
+              builder: (context, snapshot) {
+                final count = snapshot.data?.docs.length ?? 0;
+                return _statItem(
+                  icon: Icons.shopping_bag_outlined,
+                  value: "$count",
+                  label: "Orders",
+                );
+              },
+            ),
+          ),
+          Container(height: 38, width: 1, color: const Color(0xFFE6EEE8)),
+          Expanded(
+            child: StreamBuilder<List<CardItemModel>>(
+              stream: WishlistService().getWishlist(),
+              builder: (context, snapshot) {
+                final count = snapshot.data?.length ?? 0;
+                return _statItem(
+                  icon: Icons.favorite_border_rounded,
+                  value: "$count",
+                  label: "Wishlist",
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _statItem({
+    required IconData icon,
+    required String value,
+    required String label,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          height: 40,
+          width: 40,
+          decoration: BoxDecoration(
+            color: lightGreen,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: green, size: 20),
+        ),
+        const SizedBox(width: 10),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: darkText,
+                height: 1.1,
+              ),
+            ),
+            Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 11,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // ================= MENU GROUP (one card, divided rows) =================
+  Widget _menuGroup({required String title, required List<Widget> tiles}) {
+    final List<Widget> rows = [];
+
+    for (int i = 0; i < tiles.length; i++) {
+      rows.add(tiles[i]);
+      if (i != tiles.length - 1) {
+        rows.add(
+          const Padding(
+            padding: EdgeInsets.only(left: 72, right: 16),
+            child: Divider(height: 1, color: Color(0xFFEDF1ED)),
+          ),
+        );
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 10),
+          child: Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: darkText,
+            ),
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: const Color(0xFFEDF3EE)),
+            boxShadow: [
+              BoxShadow(
+                color: green.withValues(alpha: 0.06),
+                blurRadius: 14,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(22),
+            child: Column(children: rows),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _menuTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    String? trailingText,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              Container(
+                height: 44,
+                width: 44,
+                decoration: BoxDecoration(
+                  color: lightGreen,
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: Icon(icon, color: green, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: darkText,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (trailingText != null) ...[
+                Text(
+                  trailingText,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: green,
+                  ),
+                ),
+                const SizedBox(width: 6),
+              ],
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 14,
+                color: Colors.grey.shade500,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -347,7 +656,6 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           actions: [
-            // CANCEL
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
               child: Text(
@@ -358,8 +666,6 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
             ),
-
-            // LOGOUT
             ElevatedButton(
               onPressed: () async {
                 try {

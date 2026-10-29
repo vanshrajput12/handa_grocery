@@ -28,7 +28,8 @@ class _BottomNavState extends State<BottomNav> {
       body: IndexedStack(index: currentIndex, children: pages),
       bottomNavigationBar: CrystalNavigationBar(
         currentIndex: currentIndex,
-        borderWidth: 1.5,
+        backgroundColor: Colors.transparent,
+        borderWidth: 2,
         outlineBorderColor: Colors.white.withValues(alpha: 0.7),
         indicatorColor: Colors.black,
         unselectedItemColor: Colors.grey,
