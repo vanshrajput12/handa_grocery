@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../authrepo.dart';
 import 'auth_event.dart';
@@ -15,6 +16,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLoginOrSignupRequested>(_onLoginOrSignupRequested);
     on<AuthLoginRequested>(_onLoginRequested);
     on<AuthSignupRequested>(_onSignupRequested);
+    on<AuthGoogleSignInRequested>(_onGoogleSignInRequested);
     on<AuthForgotPasswordRequested>(_onForgotPasswordRequested);
     on<AuthLogoutRequested>(_onLogoutRequested);
   }
@@ -161,6 +163,40 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   // ----------------------------------------------------------
+  // GOOGLE SIGN-IN
+  // ----------------------------------------------------------
+
+  Future<void> _onGoogleSignInRequested(
+      AuthGoogleSignInRequested event,
+      Emitter<AuthState> emit,
+      ) async {
+    emit(AuthLoading());
+
+    try {
+      final user = await authRepository.signInWithGoogle();
+
+      emit(AuthAuthenticated(user));
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        // User closed the Google popup: no error message needed.
+        emit(AuthUnauthenticated());
+      } else {
+        emit(
+          const AuthFailure(
+            'Google sign-in failed. Please try again.',
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        AuthFailure(
+          _cleanErrorMessage(e),
+        ),
+      );
+    }
+  }
+
+  // ----------------------------------------------------------
   // FORGOT PASSWORD
   // ----------------------------------------------------------
 
@@ -245,6 +281,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         case 'email-already-in-use':
           return 'This email is already in use.';
+
+        case 'account-exists-with-different-credential':
+          return 'This email is already registered with a different sign-in method.';
 
         case 'network-request-failed':
           return 'Please check your internet connection.';

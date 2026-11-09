@@ -7,6 +7,8 @@ class AuthCheckedRequested extends AuthEvent {
   const AuthCheckedRequested();
 }
 
+
+
 /// Try to create an account first.
 /// If email already exists, AuthBloc will automatically try login.
 class AuthLoginOrSignupRequested extends AuthEvent {
