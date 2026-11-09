@@ -1,144 +1,112 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'models/UserModel.dart';
 
 class AuthRepository {
   final FirebaseAuth _firebaseAuth;
-  final FirebaseFirestore _firestore;
 
-  AuthRepository({
-    FirebaseAuth? firebaseAuth,
-    FirebaseFirestore? firestore,
-  })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _firestore = firestore ?? FirebaseFirestore.instance;
+  AuthRepository({FirebaseAuth? firebaseAuth})
+      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+
+  // Google Sign-In v7 must be initialized once before first use.
+  bool _googleInitialized = false;
+
+  // Paste your WEB client ID here (Firebase Console > Authentication >
+  // Sign-in method > Google > Web SDK configuration), or find it in
+  // google-services.json under "oauth_client" with "client_type": 3.
+  static const String _webClientId =
+      'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com';
 
   // ----------------------------------------------------------
-  // GET CURRENT USER
+  // FIREBASE USER -> UserModel
+  //
+  // IMPORTANT: this is the ONE place that builds your UserModel.
+  // Make it match your UserModel constructor. If your existing
+  // login()/signup() build UserModel differently, copy that here.
   // ----------------------------------------------------------
 
-  Future<UserModel?> getCurrentUser() async {
-    final user = _firebaseAuth.currentUser;
-
-    if (user == null) {
-      return null;
-    }
-
+  UserModel _toUserModel(User user) {
     return UserModel(
       uid: user.uid,
-      email: user.email ?? '',
-      name: user.displayName ?? '',
+      email: user.email ?? '', name: 'U',
     );
   }
 
   // ----------------------------------------------------------
-  // SIGNUP
+  // CURRENT USER
   // ----------------------------------------------------------
 
-  Future<UserModel> signup({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      final UserCredential credential =
-      await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
-
-      final User? user = credential.user;
-
-      if (user == null) {
-        throw Exception('Account creation failed.');
-      }
-
-      // Save basic user information in Firestore.
-      await _firestore.collection('users').doc(user.uid).set(
-        {
-          'uid': user.uid,
-          'email': user.email ?? email.trim(),
-          'name': user.displayName ?? '',
-          'createdAt': FieldValue.serverTimestamp(),
-        },
-        SetOptions(merge: true),
-      );
-
-      return UserModel(
-        uid: user.uid,
-        email: user.email ?? email.trim(),
-        name: user.displayName ?? '',
-      );
-    } on FirebaseAuthException {
-      // IMPORTANT:
-      // Do NOT convert FirebaseAuthException to a normal Exception here.
-      //
-      // The AuthBloc needs to receive FirebaseAuthException so that
-      // it can check:
-      //
-      // e.code == 'email-already-in-use'
-      //
-      // and then try login.
-      rethrow;
-    } catch (e) {
-      throw Exception(
-        e.toString().replaceFirst('Exception: ', ''),
-      );
-    }
+  Future<UserModel?> getCurrentUser() async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) return null;
+    return _toUserModel(user);
   }
 
   // ----------------------------------------------------------
-  // LOGIN
+  // EMAIL LOGIN
   // ----------------------------------------------------------
 
   Future<UserModel> login({
     required String email,
     required String password,
   }) async {
-    try {
-      final UserCredential credential =
-      await _firebaseAuth.signInWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
+    final result = await _firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    return _toUserModel(result.user!);
+  }
 
-      final User? user = credential.user;
+  // ----------------------------------------------------------
+  // EMAIL SIGNUP
+  // ----------------------------------------------------------
 
-      if (user == null) {
-        throw Exception('Login failed.');
-      }
+  Future<UserModel> signup({
+    required String email,
+    required String password,
+  }) async {
+    final result = await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    return _toUserModel(result.user!);
+  }
 
-      return UserModel(
-        uid: user.uid,
-        email: user.email ?? email.trim(),
-        name: user.displayName ?? '',
-      );
-    } on FirebaseAuthException {
-      rethrow;
-    } catch (e) {
-      throw Exception(
-        e.toString().replaceFirst('Exception: ', ''),
-      );
+  // ----------------------------------------------------------
+  // GOOGLE SIGN-IN
+  // ----------------------------------------------------------
+
+  Future<UserModel> signInWithGoogle() async {
+    final googleSignIn = GoogleSignIn.instance;
+
+    if (!_googleInitialized) {
+      await googleSignIn.initialize(serverClientId: _webClientId);
+      _googleInitialized = true;
     }
+
+    // Opens the Google account picker.
+    final googleUser = await googleSignIn.authenticate();
+
+    final idToken = googleUser.authentication.idToken;
+    if (idToken == null) {
+      throw Exception('Google sign-in failed. Please try again.');
+    }
+
+    final credential = GoogleAuthProvider.credential(idToken: idToken);
+
+    // Creates the Firebase account automatically on first Google login.
+    final result = await _firebaseAuth.signInWithCredential(credential);
+
+    return _toUserModel(result.user!);
   }
 
   // ----------------------------------------------------------
   // RESET PASSWORD
   // ----------------------------------------------------------
 
-  Future<void> resetPassword({
-    required String email,
-  }) async {
-    try {
-      await _firebaseAuth.sendPasswordResetEmail(
-        email: email.trim(),
-      );
-    } on FirebaseAuthException {
-      rethrow;
-    } catch (e) {
-      throw Exception(
-        e.toString().replaceFirst('Exception: ', ''),
-      );
-    }
+  Future<void> resetPassword({required String email}) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
   // ----------------------------------------------------------
@@ -146,12 +114,15 @@ class AuthRepository {
   // ----------------------------------------------------------
 
   Future<void> logout() async {
+    // Sign out of Google too, so the account picker shows next time.
     try {
-      await _firebaseAuth.signOut();
-    } catch (e) {
-      throw Exception(
-        e.toString().replaceFirst('Exception: ', ''),
-      );
+      if (_googleInitialized) {
+        await GoogleSignIn.instance.signOut();
+      }
+    } catch (_) {
+      // Ignore: user may not have signed in with Google.
     }
+
+    await _firebaseAuth.signOut();
   }
 }

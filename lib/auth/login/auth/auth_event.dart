@@ -7,8 +7,6 @@ class AuthCheckedRequested extends AuthEvent {
   const AuthCheckedRequested();
 }
 
-
-
 /// Try to create an account first.
 /// If email already exists, AuthBloc will automatically try login.
 class AuthLoginOrSignupRequested extends AuthEvent {
@@ -41,6 +39,11 @@ class AuthSignupRequested extends AuthEvent {
     required this.email,
     required this.password,
   });
+}
+
+/// Sign in (or create an account) with Google.
+class AuthGoogleSignInRequested extends AuthEvent {
+  const AuthGoogleSignInRequested();
 }
 
 /// Forgot password event.
