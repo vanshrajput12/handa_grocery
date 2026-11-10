@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -177,17 +178,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       emit(AuthAuthenticated(user));
     } on GoogleSignInException catch (e) {
+      debugPrint('Google sign-in error: ${e.code} | ${e.description}');
+
       if (e.code == GoogleSignInExceptionCode.canceled) {
         // User closed the Google popup: no error message needed.
         emit(AuthUnauthenticated());
       } else {
+        // While testing, the real reason is shown on screen.
+        // Later you can replace this with a simple friendly message.
         emit(
-          const AuthFailure(
-            'Google sign-in failed. Please try again.',
+          AuthFailure(
+            'Google sign-in failed (${e.code.name}). '
+                '${e.description ?? ''}'.trim(),
           ),
         );
       }
     } catch (e) {
+      debugPrint('Google sign-in error: $e');
       emit(
         AuthFailure(
           _cleanErrorMessage(e),

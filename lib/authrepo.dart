@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'models/UserModel.dart';
@@ -9,27 +10,62 @@ class AuthRepository {
   AuthRepository({FirebaseAuth? firebaseAuth})
       : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
-  // Google Sign-In v7 must be initialized once before first use.
-  bool _googleInitialized = false;
+  // ----------------------------------------------------------
+  // GOOGLE CONFIG
+  //
+  // Paste your WEB client ID here. It must look like:
+  //   123456789012-abcdefg1234567.apps.googleusercontent.com
+  //
+  // Where to find it:
+  //  - Firebase Console > Authentication > Sign-in method > Google >
+  //    Web SDK configuration > "Web client ID"
+  //  - or google-services.json > "oauth_client" > the entry with
+  //    "client_type": 3  (this entry only appears AFTER you enable Google
+  //    sign-in AND add your SHA-1, then re-download google-services.json)
+  //
+  // Do NOT use the Android client ID here. It must be the WEB one.
+  // ----------------------------------------------------------
 
-  // Paste your WEB client ID here (Firebase Console > Authentication >
-  // Sign-in method > Google > Web SDK configuration), or find it in
-  // google-services.json under "oauth_client" with "client_type": 3.
   static const String _webClientId =
-      'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com';
+      '298495645162-ikfrnuso53q79l16295hp158n4fmft72.apps.googleusercontent.com';
+
+  // Google Sign-In v7 must be initialized exactly once.
+  Future<void>? _googleInit;
+
+  Future<void> _ensureGoogleInitialized() {
+    if (_webClientId.startsWith('PASTE_YOUR_WEB_CLIENT_ID')) {
+      throw Exception(
+        'Google sign-in is not configured: set _webClientId in authrepo.dart.',
+      );
+    }
+
+    return _googleInit ??= GoogleSignIn.instance
+        .initialize(serverClientId: _webClientId)
+        .catchError((Object e) {
+      // Allow a retry if initialization failed.
+      _googleInit = null;
+      throw e;
+    });
+  }
 
   // ----------------------------------------------------------
   // FIREBASE USER -> UserModel
   //
-  // IMPORTANT: this is the ONE place that builds your UserModel.
-  // Make it match your UserModel constructor. If your existing
-  // login()/signup() build UserModel differently, copy that here.
+  // The ONE place that builds your UserModel.
   // ----------------------------------------------------------
 
   UserModel _toUserModel(User user) {
+    final email = user.email ?? '';
+    final displayName = user.displayName?.trim() ?? '';
+
+    final name = displayName.isNotEmpty
+        ? displayName
+        : (email.contains('@') ? email.split('@').first : 'User');
+
     return UserModel(
       uid: user.uid,
-      email: user.email ?? '', name: 'U',
+      email: email,
+      name: name,
     );
   }
 
@@ -78,19 +114,33 @@ class AuthRepository {
   // ----------------------------------------------------------
 
   Future<UserModel> signInWithGoogle() async {
+    await _ensureGoogleInitialized();
+
     final googleSignIn = GoogleSignIn.instance;
 
-    if (!_googleInitialized) {
-      await googleSignIn.initialize(serverClientId: _webClientId);
-      _googleInitialized = true;
+    if (!googleSignIn.supportsAuthenticate()) {
+      throw Exception('Google sign-in is not supported on this platform.');
     }
 
     // Opens the Google account picker.
-    final googleUser = await googleSignIn.authenticate();
+    final GoogleSignInAccount googleUser;
+    try {
+      googleUser = await googleSignIn.authenticate();
+    } on GoogleSignInException catch (e) {
+      // Shows the real reason in the Flutter console while testing.
+      debugPrint(
+        'GoogleSignInException -> code: ${e.code}, '
+            'description: ${e.description}, details: ${e.details}',
+      );
+      rethrow;
+    }
 
     final idToken = googleUser.authentication.idToken;
     if (idToken == null) {
-      throw Exception('Google sign-in failed. Please try again.');
+      throw Exception(
+        'Google did not return an ID token. '
+            'Check that _webClientId is the WEB client ID.',
+      );
     }
 
     final credential = GoogleAuthProvider.credential(idToken: idToken);
@@ -116,9 +166,8 @@ class AuthRepository {
   Future<void> logout() async {
     // Sign out of Google too, so the account picker shows next time.
     try {
-      if (_googleInitialized) {
-        await GoogleSignIn.instance.signOut();
-      }
+      await _ensureGoogleInitialized();
+      await GoogleSignIn.instance.signOut();
     } catch (_) {
       // Ignore: user may not have signed in with Google.
     }
