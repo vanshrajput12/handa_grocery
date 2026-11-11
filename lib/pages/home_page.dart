@@ -17,86 +17,128 @@ class _HomePageState extends State<HomePage> {
 
   static const deepGreen = Color(0xFF14573A);
   static const green = Color(0xFF248A52);
-  static const amber = Color(0xFFFFB300);
+  static const orange = Color(0xFFFF9800);
   static const darkText = Color(0xFF25352A);
 
-  final List<String> categories = ["All Grocery", "Rice", "Snacks"];
-  int selectedCategory = 0;
+  late final Stream<List<String>> _categoriesStream;
+
+  String? _selectedCategory;
+  String? _streamCategory;
+  Stream<List<CardItemModel>>? _productStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoriesStream = productService.streamCategories();
+  }
+
+  /// Creates the product stream only when the selected category changes.
+  void _useCategory(String category) {
+    if (_streamCategory != category) {
+      _streamCategory = category;
+      _productStream = productService.streamCategory(category);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F9F6),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(child: _buildHeader()),
-          SliverToBoxAdapter(child: _buildCategories()),
-          SliverToBoxAdapter(child: _buildSectionTitle()),
-          StreamBuilder<List<CardItemModel>>(
-            stream: productService.StreamRice(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SliverToBoxAdapter(
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(30),
-                      child: CircularProgressIndicator(color: green),
-                    ),
-                  ),
-                );
-              }
+      body: StreamBuilder<List<String>>(
+        stream: _categoriesStream,
+        builder: (context, catSnapshot) {
+          final categories = catSnapshot.data ?? [];
 
-              if (snapshot.hasError) {
-                return SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Text(
-                      "Error: ${snapshot.error}",
-                      style: const TextStyle(color: Colors.red, fontSize: 16),
-                    ),
-                  ),
-                );
-              }
+          // If nothing is selected (or the category was deleted), pick the first
+          if (categories.isNotEmpty &&
+              (_selectedCategory == null ||
+                  !categories.contains(_selectedCategory))) {
+            _selectedCategory = categories.first;
+          }
+          if (_selectedCategory != null) _useCategory(_selectedCategory!);
 
-              if (!snapshot.hasData) {
-                return const SliverToBoxAdapter(
-                  child: Center(child: Text("No data found")),
-                );
-              }
-
-              final products = snapshot.data!;
-
-              if (products.isEmpty) {
-                return const SliverToBoxAdapter(
-                  child: Center(child: Text("No products found")),
-                );
-              }
-
-              return SliverPadding(
-                padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-                sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                        (context, index) =>
-                        HomePageCardItem(cardItemModel: products[index]),
-                    childCount: products.length,
-                  ),
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 14,
-                    crossAxisSpacing: 14,
-                    childAspectRatio: 0.74,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: _buildHeader()),
+              SliverToBoxAdapter(child: _buildCategories(categories)),
+              SliverToBoxAdapter(child: _buildSectionTitle()),
+              _buildBody(catSnapshot, categories),
+            ],
+          );
+        },
       ),
     );
   }
 
-  // GREEN CURVED HEADER (replaces the yellow app bar)
+  Widget _buildBody(
+      AsyncSnapshot<List<String>> catSnapshot, List<String> categories) {
+    if (catSnapshot.connectionState == ConnectionState.waiting) {
+      return _messageSliver(loading: true);
+    }
+    if (catSnapshot.hasError) {
+      return _messageSliver(text: "Error: ${catSnapshot.error}", isError: true);
+    }
+    if (categories.isEmpty) {
+      return _messageSliver(text: "No categories yet");
+    }
+
+    return StreamBuilder<List<CardItemModel>>(
+      stream: _productStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _messageSliver(loading: true);
+        }
+        if (snapshot.hasError) {
+          return _messageSliver(text: "Error: ${snapshot.error}", isError: true);
+        }
+
+        final products = snapshot.data ?? [];
+        if (products.isEmpty) {
+          return _messageSliver(text: "No products in this category yet");
+        }
+
+        return SliverPadding(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 100),
+          sliver: SliverGrid(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) =>
+                  HomePageCardItem(cardItemModel: products[index]),
+              childCount: products.length,
+            ),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 14,
+              crossAxisSpacing: 14,
+              childAspectRatio: 0.74,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _messageSliver(
+      {String? text, bool loading = false, bool isError = false}) {
+    return SliverToBoxAdapter(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(30),
+          child: loading
+              ? const CircularProgressIndicator(color: green)
+              : Text(
+            text ?? "",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: isError ? Colors.red : Colors.grey.shade600,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // GREEN CURVED HEADER
   Widget _buildHeader() {
     return Container(
       width: double.infinity,
@@ -153,9 +195,7 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(width: 10),
                   _circleButton(
                     icon: Icons.notifications_none_rounded,
-                    onTap: () {
-                      // Your existing notification action
-                    },
+                    onTap: () {},
                   ),
                 ],
               ),
@@ -191,7 +231,7 @@ class _HomePageState extends State<HomePage> {
                       height: 44,
                       width: 44,
                       decoration: const BoxDecoration(
-                        color: amber,
+                        color: orange,
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
@@ -229,8 +269,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // CATEGORY CHIPS
-  Widget _buildCategories() {
+  // CATEGORY CHIPS (from Firestore)
+  Widget _buildCategories(List<String> categories) {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: SizedBox(
@@ -241,9 +281,13 @@ class _HomePageState extends State<HomePage> {
           itemCount: categories.length,
           separatorBuilder: (_, __) => const SizedBox(width: 10),
           itemBuilder: (context, index) {
-            final selected = index == selectedCategory;
+            final name = categories[index];
+            final selected = name == _selectedCategory;
             return GestureDetector(
-              onTap: () => setState(() => selectedCategory = index),
+              onTap: () => setState(() {
+                _selectedCategory = name;
+                _useCategory(name);
+              }),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -256,7 +300,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child: Text(
-                  categories[index],
+                  name,
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -278,7 +322,7 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "You might need",
+            _selectedCategory ?? "You might need",
             style: GoogleFonts.poppins(
               fontSize: 17,
               fontWeight: FontWeight.w700,

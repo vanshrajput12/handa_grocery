@@ -4,11 +4,27 @@ import '../models/CardItem_model.dart';
 class ProductService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  /// Streams all items of ONE category.
-  /// The category name is the same as the Firestore collection name.
+  /// Category names created in the admin panel (oldest first).
+  Stream<List<String>> streamCategories() {
+    return _db.collection('categories').snapshots().map((snapshot) {
+      final docs = snapshot.docs.toList()
+        ..sort((a, b) {
+          final aTime = a.data()['createdAt'] as Timestamp?;
+          final bTime = b.data()['createdAt'] as Timestamp?;
+          return (aTime?.millisecondsSinceEpoch ?? 0)
+              .compareTo(bTime?.millisecondsSinceEpoch ?? 0);
+        });
+
+      return docs
+          .map((d) => (d.data()['name'] ?? d.id).toString().trim())
+          .where((name) => name.isNotEmpty)
+          .toList();
+    });
+  }
+
+  /// All items of ONE category (collection name = category name).
   Stream<List<CardItemModel>> streamCategory(String category) {
     return _db.collection(category).snapshots().map((snapshot) {
-      // Sort in Dart (newest first), so docs without a 'name' field are not hidden
       final docs = snapshot.docs.toList()
         ..sort((a, b) {
           final aTime = a.data()['createdAt'] as Timestamp?;
