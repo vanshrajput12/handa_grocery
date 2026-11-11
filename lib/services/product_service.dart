@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/CardItem_model.dart';
 
@@ -35,5 +36,56 @@ class ProductService {
 
       return docs.map((doc) => CardItemModel.fromFirestore(doc)).toList();
     });
+  }
+
+  /// Items of EVERY category combined, updating live.
+  /// New or deleted categories are picked up automatically.
+  Stream<List<CardItemModel>> streamAllProducts() {
+    late final StreamController<List<CardItemModel>> controller;
+    StreamSubscription<List<String>>? categorySub;
+    final Map<String, StreamSubscription<List<CardItemModel>>> productSubs = {};
+    final Map<String, List<CardItemModel>> itemsByCategory = {};
+
+    void emit() {
+      if (controller.isClosed) return;
+      controller.add(itemsByCategory.values.expand((list) => list).toList());
+    }
+
+    controller = StreamController<List<CardItemModel>>(
+      onListen: () {
+        categorySub = streamCategories().listen((categories) {
+          // Stop listening to deleted categories
+          final removed =
+          productSubs.keys.where((c) => !categories.contains(c)).toList();
+          for (final c in removed) {
+            productSubs.remove(c)?.cancel();
+            itemsByCategory.remove(c);
+          }
+
+          // Start listening to new categories
+          for (final c in categories) {
+            if (productSubs.containsKey(c)) continue;
+            productSubs[c] = streamCategory(c).listen(
+                  (items) {
+                itemsByCategory[c] = items;
+                emit();
+              },
+              onError: controller.addError,
+            );
+          }
+
+          emit();
+        }, onError: controller.addError);
+      },
+      onCancel: () async {
+        await categorySub?.cancel();
+        for (final sub in productSubs.values) {
+          await sub.cancel();
+        }
+        productSubs.clear();
+      },
+    );
+
+    return controller.stream;
   }
 }
