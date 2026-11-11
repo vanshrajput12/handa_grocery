@@ -10,21 +10,7 @@ class AuthRepository {
   AuthRepository({FirebaseAuth? firebaseAuth})
       : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
-  // ----------------------------------------------------------
-  // GOOGLE CONFIG
-  //
-  // Paste your WEB client ID here. It must look like:
-  //   123456789012-abcdefg1234567.apps.googleusercontent.com
-  //
-  // Where to find it:
-  //  - Firebase Console > Authentication > Sign-in method > Google >
-  //    Web SDK configuration > "Web client ID"
-  //  - or google-services.json > "oauth_client" > the entry with
-  //    "client_type": 3  (this entry only appears AFTER you enable Google
-  //    sign-in AND add your SHA-1, then re-download google-services.json)
-  //
-  // Do NOT use the Android client ID here. It must be the WEB one.
-  // ----------------------------------------------------------
+
 
   static const String _webClientId =
       '298495645162-ikfrnuso53q79l16295hp158n4fmft72.apps.googleusercontent.com';
