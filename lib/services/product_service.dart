@@ -6,6 +6,7 @@ class ProductService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   /// Category names created in the admin panel (oldest first).
+  /// The document ID is the collection name.
   Stream<List<String>> streamCategories() {
     return _db.collection('categories').snapshots().map((snapshot) {
       final docs = snapshot.docs.toList()
@@ -17,7 +18,7 @@ class ProductService {
         });
 
       return docs
-          .map((d) => (d.data()['name'] ?? d.id).toString().trim())
+          .map((d) => d.id.trim())
           .where((name) => name.isNotEmpty)
           .toList();
     });
