@@ -94,7 +94,7 @@ class HomePageCardItem extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Text(
-                            '₹${cardItemModel.price}',
+                            cardItemModel.price,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins(

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:handa_grocery/UiHelper/homepage_productCard_helper.dart';
 import 'package:handa_grocery/models/CardItem_model.dart';
 import 'package:handa_grocery/pages/cart_page.dart';
+import 'package:handa_grocery/pages/see_all_item_screen.dart';
 import 'package:handa_grocery/services/product_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -329,12 +330,20 @@ class _HomePageState extends State<HomePage> {
               color: darkText,
             ),
           ),
-          Text(
-            "See more",
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: green,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AllProductsPage()),
+              );
+            },
+            child: Text(
+              "See more",
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: green,
+              ),
             ),
           ),
         ],
